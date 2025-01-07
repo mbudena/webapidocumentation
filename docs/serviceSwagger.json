@@ -1,0 +1,238 @@
+{
+    "swagger": "2.0",
+    "info": {
+    "description": "\n
+## Releases\n
+
+| Version | Description                                                         |\n
+|---------|---------------------------------------------------------------------|\n
+| V1.1    | Added GET operation: return service information; Enhanced PATCH
+Operation: Added various validations; Documentation improvements.               |\n
+| V1.0    | Initial release                                                     |\n
+
+## Request Headers\n
+
+The following headers are mandatory:\n\n 
+
+| Header            |        Value                    |\n
+|-------------------|---------------------------------|\n
+| `Accept`          | application/json                |\n
+| `Content-Type`    | application/json                |\n
+| `Authorization`   | Basic Base64(username:password) |\n\n 
+
+See the *Authentication and Authorization* chapter for more detail on the 
+`Authorization` header value \n\n
+
+Copyright: Telkom SA Ltd",
+    "version": "1.1",
+    "title": "Service Management"
+    },
+    "host": "ecdev01api.telkom.co.za",
+    "basePath": "/cons-ac/Activation-Config/v1",
+    "schemes": [
+    "https"
+    ],
+    "consumes": [
+    "application/json"
+    ],
+    "produces": [
+    "application/json"
+    ],
+    "security": [
+    {
+    "basicAuth": []
+    }
+    ],
+    "paths": {
+    "/service/{id}": {
+    "patch": {
+    "tags": [
+    "Service"
+    ],
+    "summary": "Resumes or suspends a mobile service.",
+    "description": "Modification of service state:\n* Patch service state to **active** to resume the service. \n* Patch service state to **suspend** to suspend the service.",
+    "operationId": "ServicePatch",
+    "parameters": [
+    {
+    "name": "id",
+    "in": "path",
+    "description": "Use the MSISDN associated with the service as id",
+    "required": true,
+    "type": "string"
+    },
+    {
+    "in": "body",
+    "name": "Service",
+    "required": true,
+    "schema": {
+    "$ref": "#/definitions/PATCHService"
+    }
+    }
+    ],
+    "responses": {
+    "201": {
+    "description": "Accepted",
+    "schema": {
+    "$ref": "#/definitions/PATCHReponse"
+    }
+    }
+    }
+    },
+    "get": {
+    "tags": [
+    "Service"
+    ],
+    "summary": "Retrieve a service and product details",
+    "description": "This operation retrieves a service details information i.e SubscriberInfo and RatePlan. ",
+    "operationId": "GETService",
+    "parameters": [
+    {
+    "name": "id",
+    "in": "path",
+    "description": "Use the MSISDN/ServiceID",
+    "required": true,
+    "type": "string"
+    }
+    ],
+    "responses": {
+    "200": {
+    "description": "Success",
+    "schema": {
+    "$ref": "#/definitions/GETService"
+    }
+    }
+    }
+    }
+    }
+    },
+    "securityDefinitions": {
+    "basicAuth": {
+    "type": "basic"
+    }
+    },
+    "definitions": {
+    "StateType": {
+    "type": "string",
+    "description": "Set the desired state of the mobile service to active or suspend",
+    "enum": [
+    "active",
+    "suspend"
+    ]
+    },
+    "PATCHService": {
+    "type": "object",
+    "required": [
+    "id"
+    ],
+    "properties": {
+    "id": {
+    "type": "string",
+    "description": "id is a typically the MSISDN associated with the mobile service"
+    },
+    "state": {
+    "$ref": "#/definitions/StateType"
+    }
+    },
+    "example": {
+    "id": "0812004774",
+    "state": "suspend",
+    "serviceCharacteristic": [
+    {
+    "name": "reasonText",
+    "value": "CREQ"
+    }
+    ]
+    }
+    },
+    "PATCHReponse": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "string",
+    "description": "Unique order reference by order management system"
+    },
+    "externalId": {
+    "type": "string",
+    "description": "external Id returns the MSISDN associated with the mobile service"
+    }
+    },
+    "example": {
+    "id": "3478656489",
+    "externalId": "0812006702"
+    }
+    },
+    "GETService": {
+    "type": "object",
+    "properties": {
+    "ratePlan": {
+    "$ref": "#/definitions/RatePlan"
+    },
+    "subscriberInfo": {
+    "$ref": "#/definitions/SubscriberInfo"
+    }
+    },
+    "description": "An identified part of the order. A product order is decomposed into one or more order items.",
+    "example": {
+    "ratePlan": {
+    "productName": "20Mbps LTE Wireless Unlimited All Hours",
+    "effectiveDate": "2022-06-02T08:51:44.000Z",
+    "expiryDate": "2022-06-02T08:51:44.000Z",
+    "createDate": "2022-06-02T08:51:44.000Z",
+    "status": "Active"
+    },
+    "subscriberInfo": {
+    "subscriberStatus": "Suspend",
+    "subscriberType": "postpaid",
+    "suspendReason": "CREQ",
+    "iccid": 89270200130878830000
+    }
+    }
+    },
+    "RatePlan": {
+    "type": "object",
+    "properties": {
+    "productName": {
+    "type": "string",
+    "description": "Name of the Product"
+    },
+    "effectiveDate": {
+    "type": "string",
+    "description": "effectiveDate"
+    },
+    "expiryDate": {
+    "type": "string",
+    "description": "expiryDate"
+    },
+    "createDate": {
+    "type": "string",
+    "description": "createDate"
+    },
+    "status": {
+    "type": "string",
+    "description": "Staus"
+    }
+    }
+    },
+    "SubscriberInfo": {
+    "type": "object",
+    "properties": {
+    "subscriberStatus": {
+    "type": "string",
+    "description": "Status of the subscriber"
+    },
+    "subscriberType": {
+    "type": "string",
+    "description": "Type of the subscriber"
+    },
+    "suspendReason": {
+    "type": "string",
+    "description": "Reason of the suspend"
+    },
+    "iccid": {
+    "type": "string",
+    "description": "iccid"
+    }
+    }
+    }
+    }
+    }

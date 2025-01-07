@@ -1,0 +1,155 @@
+{
+    "swagger": "2.0",
+    "info": {
+    "description": "\n
+## Releases\n
+
+| Version | Description                                                         |\n
+|---------|---------------------------------------------------------------------|\n
+| V1.1    | Enhanced trouble ticket creation; Documentation improvements.       |\n
+| V1.0    | Initial release                                                     |\n
+
+## Request Headers\n
+
+The following headers are mandatory:\n\n 
+
+| Header            |        Value                    |\n
+|-------------------|---------------------------------|\n
+| `Accept`          | application/json                |\n
+| `Content-Type`    | application/json                |\n
+| `Authorization`   | Basic Base64(username:password) |\n\n 
+
+See the *Authentication and Authorization* chapter for more detail on the 
+`Authorization` header value \n\n
+
+Copyright: Telkom SA Ltd",
+    "version": "1.1",
+    "title": "Ticket Management"
+    },
+    "host": "ecdev01api.telkom.co.za",
+    "basePath": "/cons-tt/TroubleTicket/v1",
+    "schemes": [
+    "https"
+    ],
+    "consumes": [
+    "application/json"
+    ],
+    "produces": [
+    "application/json"
+    ],
+    "security": [
+    {
+    "basicAuth": []
+    }
+    ],
+    "paths": {
+    "/troubleTicket": {
+    "post": {
+    "operationId": "createTroubleTicket",
+    "summary": "Creates a TroubleTicket",
+    "description": "This operation creates a TroubleTicket entity for investigation and resolution.\n\nInput parameter:\n- externalId: Your reference for this particular order. \n- ticketsymptom: symptom summary experienced on the service.\n- relatedEntity.id: From Onbiller service inventory.\n",
+    "tags": [
+    "troubleTicket"
+    ],
+    "parameters": [
+    {
+    "name": "troubleTicket",
+    "description": "The TroubleTicket to be created",
+    "required": true,
+    "schema": {
+    "$ref": "#/definitions/TroubleTicket_Create"
+    },
+    "in": "body"
+    }
+    ],
+    "responses": {
+    "201": {
+    "description": "Trouble Ticket entity was created with ticket reference case ID number",
+    "schema": {
+    "$ref": "#/definitions/TroubleTicket_Create_Resp"
+    }
+    }
+    }
+    }
+    }
+    },
+    "securityDefinitions": {
+    "basicAuth": {
+    "type": "basic"
+    }
+    },
+    "definitions": {
+    "RelatedEntity": {
+    "type": "object",
+    "description": "Contains details of the affected entity e.g. service number",
+    "properties": {
+    "id": {
+    "type": "string",
+    "description": "Identifier of the relatedEntity e.g. MSISDN number"
+    },
+    "type": {
+    "type": "string",
+    "description": "Type of entity that is affected e.g. serviceID"
+    }
+    }
+    },
+    "TroubleTicket_Create": {
+    "type": "object",
+    "description": "A trouble ticket is a record of an issue that is created, tracked, and managed by a trouble ticket management system\nSkipped properties: id,href",
+    "required": [
+    "externalId",
+    "ticketSymptom",
+    "relatedEntity"
+    ],
+    "properties": {
+    "creationDate": {
+    "type": "string",
+    "format": "date-time",
+    "description": "Trouble ticket creation date"
+    },
+    "description": {
+    "type": "string",
+    "description": "Description of the issue or problem"
+    },
+    "externalId": {
+    "type": "string",
+    "description": "External reference as provided by client system"
+    },
+    "ticketSymptom": {
+    "type": "string",
+    "description": "represent the affected service ticket symptom for the ticket e.g. \"Billing dispute\", \"Mobile Coverage Broken\", \"Onbillers Invoice Dispute\", \"Activate International Roaming\", \"Deactivate International Roaming\"."
+    },
+    "relatedEntity": {
+    "type": "array",
+    "items": {
+    "$ref": "#/definitions/RelatedEntity"
+    },
+    "description": "Related Entities associated with the Trouble Ticket"
+    }
+    },
+    "example": {
+    "description": "<Free text field providing description of issue>",
+    "externalId": "<YOUR ORDER REF>",
+    "ticketSymptom": "<Resume Error>",
+    "relatedEntity": [
+    {
+    "id": "<0811231234>",
+    "type": "ServiceID"
+    }
+    ]
+    }
+    },
+    "TroubleTicket_Create_Resp": {
+    "description": "Trouble Ticket response object contains the case ID reference   ",
+    "type": "object",
+    "properties": {
+    "caseID": {
+    "type": "string"
+    }
+    },
+    "example": {
+    "caseID": 347982542
+    }
+    }
+    }
+    }

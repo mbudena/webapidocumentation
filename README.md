@@ -8,9 +8,7 @@ It includes specifications for each resource API in OpenAPI format, as well as s
 
 The following resources APIs are supported:
 
-- Order Management
 - Service Management
-- Ticket Management
 
 Supporting information includes:
 

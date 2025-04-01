@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="Noah Mbude" name="author"/><link href="https://motttt.github.io/WebApiDocumentation/troubleshooting/" rel="canonical"/>
+<link href="../img/favicon.ico" rel="shortcut icon"/>
+<title>Troubleshooting - WebApiDocumentation</title>
+<link href="../css/theme.css" rel="stylesheet"/>
+<link href="../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<script>
+        // Current page data
+        var mkdocs_page_name = "Troubleshooting";
+        var mkdocs_page_input_path = "troubleshooting.md";
+        var mkdocs_page_url = "/WebApiDocumentation/troubleshooting/";
+      </script>
+<!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-72998NWP0W"></script>
+<script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', "G-72998NWP0W");
+      </script>
+</head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href=".."> WebApiDocumentation
+        </a><div role="search">
+<form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption"><span class="caption-text">Introduction</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../apiOperationList/">API Operation List</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onboardingProcess/">Onboarding Process</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../simulator/">API Environments, and the API simulator</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../authorisation/">Authentication and Authorization</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../errorCodes/">Error Codes</a>
+</li>
+<li class="toctree-l1 current"><a class="reference internal current" href="./">Troubleshooting</a>
+<ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="#validation-errors">Validation Errors</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#deal-related-errors">Deal related errors</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cache-errors">Cache errors</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#communication-errors">Communication errors</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting-orders">Troubleshooting Orders</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#requested-completion-date">Requested completion date</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#deal-ids-and-deal-names">Deal IDs and Deal Names</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tracking-order-progress">Tracking Order progress</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#errors-querying-orders">Errors Querying Orders</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#investigating-services">Investigating Services</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#investigating-sim-issues">Investigating SIM issues</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reporting-issues">Reporting Issues</a>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Service API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../serviceSpecification/">API Documentation</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="Mobile navigation menu" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="..">WebApiDocumentation</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content"><div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Docs" class="icon icon-home" href=".."></a></li>
+<li class="breadcrumb-item">Introduction</li>
+<li class="breadcrumb-item active">Troubleshooting</li>
+<li class="wy-breadcrumbs-aside">
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div class="section" itemprop="articleBody">
+<h1 id="troubleshooting">Troubleshooting</h1>
+<p>The tables below provide further information on typically encountered errors, with suggested actions. This is followed by investigation and troubleshooting advice.</p>
+<h2 id="validation-errors">Validation Errors</h2>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th>ERROR CODE</th>
+<th>ERROR MESSAGE</th>
+<th>ACTION</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>400</td>
+<td>CONS-PO-0003</td>
+<td>This service ID currently has open orders, your order cannot be processed</td>
+<td>Investigate and resolve open order on the service</td>
+</tr>
+<tr>
+<td>400</td>
+<td>CONS-PO-0004</td>
+<td>Subscriber details for this MSISDN were not found.</td>
+<td>Investigate and resolve service state</td>
+</tr>
+<tr>
+<td>500</td>
+<td>CONS-PO 0005</td>
+<td>This SIM number {ICCID} has already being used</td>
+<td>Investigate SIM status</td>
+</tr>
+<tr>
+<td>500</td>
+<td>ESB-1</td>
+<td>Business Error Customer information: Not retrieved.</td>
+<td>Please report to the support team.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deal-related-errors">Deal related errors</h2>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th>ERROR CODE</th>
+<th>ERROR MESSAGE</th>
+<th>ACTION</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>400</td>
+<td>Cons-po-0002</td>
+<td>Requested completion date cannot be before today’s date.</td>
+<td>Adjust the Requested completion date to one in the future.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>WSE-500</td>
+<td>Agent ID with {id} does not exist in CRM database</td>
+<td>Please report to the support team.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>WSE-500</td>
+<td>The deal ID is not recognised. Must be one of (valid deal IDs)</td>
+<td>Investigate Deal ID</td>
+</tr>
+<tr>
+<td>500</td>
+<td>WSE-500</td>
+<td>The deal name is not recognised. Must be one of (valid deal names)</td>
+<td>Investigate Deal name</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cache-errors">Cache errors</h2>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th>ERROR CODE</th>
+<th>ERROR MESSAGE</th>
+<th>ACTION</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>500</td>
+<td>WSE-500</td>
+<td>Web Service Business Error LPDH – Object not found for requested ID.</td>
+<td>Retry after an hour.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>LPDH_ GOE06</td>
+<td>Web Service Error BAN or Offer could not be found for ServiceID</td>
+<td>Please retry later. If consistent, could be a symptom of an earlier order failing, or a ceased service.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>WSE-501</td>
+<td>Web Service Technical Error LPDH_GCRS02: Service ID not Found in CRM, OMS or Huawei</td>
+<td>Please retry later.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="communication-errors">Communication errors</h2>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th>ERROR CODE</th>
+<th>ERROR MESSAGE</th>
+<th>ACTION</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>550</td>
+<td>WSE-501</td>
+<td>PortalWSSOAPClientExcepion: Internal Server Error</td>
+<td>Please report to the support team.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>WSE-501</td>
+<td>PortalWSSOAPClientException: I/O error: Read timed out;</td>
+<td>Please report to the support team.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>GATE-0004</td>
+<td>Connectivity Error occurred during the service invocation</td>
+<td>Please report to the support team.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>GATE-0004</td>
+<td>Technical Error Timeout occurred during the service invocation</td>
+<td>Please report to the support team.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="troubleshooting-orders">Troubleshooting Orders</h2>
+<h3 id="requested-completion-date">Requested completion date</h3>
+<ul>
+<li>Requested completion date needs to be in the future. For orders requiring immediate provisioning, a time a few minutes in the future will allow for latency before date validation.</li>
+<li>The requested completion date needs to be within the next six months.</li>
+</ul>
+<h3 id="deal-ids-and-deal-names">Deal IDs and Deal Names</h3>
+<ul>
+<li>Deal reference information is provided in the form of a <em>Deal Sheet</em> from the Account Manager.</li>
+<li><strong>NOTE</strong>: The string " Deal" should be appended to the deal names typically provided in the deal sheet.</li>
+</ul>
+<h3 id="tracking-order-progress">Tracking Order progress</h3>
+<ul>
+<li>Order status queries sooner than 15 minutes of acceptance may fail due to cache latency.</li>
+<li>For asynchronous orders, the GET <em>/cons-po/ProductOrder/v1/productOrder/{id}</em> operation should be used</li>
+<li>Orders with a status of <strong>Negotiation</strong> are being processed.</li>
+<li>Orders with a status of <strong>Done</strong> are complete.</li>
+<li>Orders with a status of <strong>Delivery</strong> are waiting tor the future date specified, for provisioning.</li>
+<li>Orders in status <strong>Negotiation</strong> after an hour of placement should be reported to the support team.</li>
+<li>Recommended order completion polling: Query every 15 minutes till Done or Delivery, or an hour as passed.</li>
+</ul>
+<h3 id="errors-querying-orders">Errors Querying Orders</h3>
+<ul>
+<li>Use the productOrderGet API <em>/cons-po/ProductOrder/v1/productOrder/{id}</em> to get the status of the order.</li>
+<li><em>WSE-500</em> typically indicates that asynchronous order is not yet processed, and the result not available in the LPDH cache. Retry in an hour.</li>
+<li><em>LPDH_GOE06</em> Could be a symptom of an earlier order failing, or a ceased service.</li>
+</ul>
+<h2 id="investigating-services">Investigating Services</h2>
+<ul>
+<li>The <em>/cons-ac/Activation-Config/v1/service/{id}</em> API operation should be used to query service state.</li>
+<li>The MSISDN provided on order acceptance will not reflect in caches as active immediately, and may take up to an hour to reflect in caches used for queries.</li>
+</ul>
+<h2 id="investigating-sim-issues">Investigating SIM issues</h2>
+<ul>
+<li>
+<p><em>CONS-PO 0005</em> The SIM is already active on the network. Investigate SIM status. If you have reason to believe that a false positive on the verification, please report this to the API support team.</p>
+</li>
+<li>
+<p>On an end to end verification environment: Retry with a known unused ICCID from the supplied test data. Request additional end to end test ICCIDs from the Onboarding Support team if required.</p>
+</li>
+</ul>
+<h2 id="reporting-issues">Reporting Issues</h2>
+<p>Please provide the full request and response when reporting an issue, to assist with a quick resolution.</p>
+</div>
+</div><footer>
+<div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-left" href="../errorCodes/" title="Error Codes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+<a class="btn btn-neutral float-right" href="../serviceSpecification/" title="API Documentation">Next <span class="icon icon-circle-arrow-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="Versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span><a href="../errorCodes/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../serviceSpecification/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script src="../js/jquery-3.6.0.min.js"></script>
+<script>var base_url = "..";</script>
+<script src="../js/theme_extra.js"></script>
+<script src="../js/theme.js"></script>
+<script src="../search/main.js"></script>
+<script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+<script>
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        </script></body>
+</html>

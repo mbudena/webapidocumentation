@@ -15,11 +15,8 @@ The documentation phase precedes the provision of access to API platforms.
 
 The following activities are relevant to this phase:
 
-- Commercial Agreements: The singing of Business contracts and agreements.
-- Network Access Agreements: The singing of Network access agreements.
 - Scope Determination: Documenting which operations will be used by the API consumer, which in turn determines the scope items for the Telco internal IT Change Request process, and therefore also the test result schedules.
 - API documentation: Provision of access to API technical documentation.
-- IT Change Request initiation: Preparation of the formal inputs to the IT Change Request (CR) process.
 
 ### Phase II: Coding and Unit testing
 
@@ -54,11 +51,6 @@ The following activities are relevant to this phase:
 ### Phase IV: Production implementation
 
 Once successful end to end testing has been signed off, a production release date is scheduled.
-
-Pre-requisites:
-
-- SIM inventory: The API consumer (if making use of the CreateDeal or SIM swap operations), need to have mobile SIMs in stock.
-- Deal metadata: The API consumer (if making use of the CreateDeal or Migrate operations), will need to use valid Deals, which are provided by their Account Manager, in the form of a Deal Sheet.
 
 The following activities are relevant to this phase:
 

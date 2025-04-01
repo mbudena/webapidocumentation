@@ -2,7 +2,8 @@
 
 Error information returned from failed API calls always include standard HTTP response codes.
 
-In addition, for some error scenarios, a json response payload with further error information is returned.
+Web APIs expect HTTP POST or GET request to application. A response will then be returned in the form of a JSON response.
+
 
 ## HTTP Response codes
 
@@ -30,42 +31,40 @@ such as downstream validation failures.
 
 In cases where further information on the cause of an error is provided, it is in the form of a json response body with the following elements:
 
-- Error Code
-- Error Reason
-- Error Message
-- Status
+- resultCode
+
+One of the return parameters returning a value with the following standards.
+
+| Vaule | Description |
+|-------|----------|
+|0      | No error has occurred.  |
+|1      | An error/exception has occurred. Error codes larger than zero usually depict a business-related error.   |
+|-1     | An error/exception has occurred. Error codes less than 0 imply a technical error has occurred.   |
+
+- resultMessageCode
+
+ The resultMessage is not intended for customers. It provides the developer or support with more information around the reponse.
+
+- friendlyCustomerMessage
+
+ Reference code used by the APIs to help us with identifying problems on our side. These should map to a result code in this document
+
+- payload
+
+ The payload contains all the information which can be consumed by the view layer. Information is packaged up and put into the payload. In the case where an error has occurred, the payload will always be empty. Payload could be empty for successful transactions too.
 
 As example error response payload:
 
 ```json
-{
-  "code": "APN-PO-0002:GetCustomerDetails:1:WS-PO-0001",
-  "reason": "Authorization error",
-  "message": "Authorization Failed: Corporate Customer is not allowed to perform this service",
-  "status": "401:APN-PO-0002"
-}
+
+
+    "resultCode": 1,
+    "resultMessageCode": "api-bus-004",
+    "resultMessage": "Could not retrieve billing usages history summary.",
+    "friendlyCustomerMessage": "",
+    "payload": {}
+
+
 ```
 
-In instances where the processing failure in a downstream system, error responses from the downstream system
-are encoded into the response payload.
-
-## Structure of the Error Body Response
-
-| Element | Structure or description                                                              |
-|---------|---------------------------------------------------------------------------------------|
-| Code    | API_GW_ERROR_CODE:ESB_WRAPPER_NAME:ESB_RESULT_CODE:ESB_MESSAGE_CODE                   |
-| Reason  | API_GW_ERROR_EXPLANATION                                                              |
-| Message | ESB_RESULT_MESSAGE                                                                    |
-| Status  | HTTP_CODE:API_GW_ERROR_CODE                                                           |
-
-### Description of encoded information in the error response json
-
-| Parameter                | Description                                                         |
-|--------------------------|---------------------------------------------------------------------|
-| API_GW_ERROR_CODE        | API Gateway error code                                              |
-| ESB_WRAPPER_NAME         | Downstream API operation                                            |
-| ESB_RESULT_CODE          | Downstream API result code                                          |
-| ESB_MESSAGE_CODE         | Downstream message code                                             |
-| API_GW_ERROR_EXPLANATION | Technical supporting information related to the error               |
-| ESB_RESULT_MESSAGE       | Downstream API result message                                       |
-| HTTP_CODE                | HTTP response code                                                  |
+In instances where the processing failure in a downstream system, error responses from the downstream system are encoded into the response payload.

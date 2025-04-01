@@ -1,0 +1,591 @@
+openapi: 3.0.0
+info:
+  title: Eportal API
+  description: API documentation for ePortal services.
+  version: 1.0.0
+servers:
+  - url: "ecdev02selfservice.telkom.co.za"
+
+components:
+ securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: "https://loginecdev02.telkom.co.za/oic_rest/rest/mobileoamauthentication/acesss"
+          scopes:
+            read: "Access to read data"
+            write: "Access to write data"
+
+ responses:
+    NoError:
+      description: No error has occurred.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 0
+              message:
+                type: string
+                example: "Request successful"
+                
+    BusinessError:
+      description: A business-related error has occurred.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 1
+              message:
+                type: string
+                example: "A business error has occurred"
+                
+    TechnicalError:
+      description: A technical error has occurred.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: -1
+              message:
+                type: string
+                example: "A technical error has occurred"
+paths:
+
+  /oic_rest/rest/mobileoamauthentication/register:
+    post:
+      summary: Register mobile authentication and get a client registration handle
+      operationId: registerMobileAuthentication
+      description: This endpoint registers the mobile authentication and returns a `CLIENTREGHANDLE`.
+      parameters:
+        - in: header  
+          name: X-IDAAS-SERVICEDOMAIN
+          schema: 
+            type: string 
+            example: MobileServiceDomain
+      requestBody:
+        description: Request body to register mobile authentication.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                X-Idaas-Rest-Subject-Type:
+                  type: string
+                  example: "USERCREDENTIAL"
+                X-Idaas-Rest-Subject-Username:
+                  type: string
+                  example: "lombarj2@telkom.co.za"
+                X-Idaas-Rest-Subject-Password:
+                  type: string
+                  example: "11111111"
+                X-Idaas-Rest-New-Token-Type-To-Create:
+                  type: string
+                  example: "CLIENTREGHANDLE"
+                clientId:
+                  type: string
+                  example: "Telkom"
+      responses:
+        '200':
+          description: Successful response with the registration handle token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  X-Idaas-Rest-Token-Type:
+                    type: string
+                    example: "CLIENTREGHANDLE"
+                  X-Idaas-Rest-Token-Value:
+                    type: string
+                    example: "eyJvcmFjbGU6aWRtOmNsYWltczpjbGllbnQ6c2RrdmVyc2lvbiI6IjExLjEuMi4wLjAiLCJ0b2tlblR5cGUiOiJDTElFTlRSRUdIQU5ETEUiLCJyZWdVc2VyIjoibG9tYmFyajJAdGVsa29tLmNvLnphIiwiaXNzIjoiTW9iaWxlT0FNQXV0aGVudGljYXRpb24iLCJvcmFjbGU6aWRtOmNsYWltczpjbGllbnQ6b3N0eXBlIjoiaU9TIDExLjQiLCJyZWdUUyI6MTczODY3NTI0OCwianRpIjoiOTk5N2NjMzktMzQ0My00MzQzLThkYjMtNGFlMTBmOTYyZGMzIiwib3JhY2xlOmlkbTpjbGFpbXM6Y2xpZW50Om9zdmVyc2lvbiI6IjExLjQiLCJjbGllbnRJZCI6IlRlbGtvbSJ9.25RC1IK8sbx+8pOWk7v+uBder0t441KqQ35ch7XU8NE="
+
+
+  /oic_rest/rest/mobileoamauthentication/authenticate:
+    post:
+      summary: Authenticate a user
+      description: Authenticates a user and returns a user token.
+      parameters:
+        - in: header
+          name: X-IDAAS-SERVICEDOMAIN
+          schema:
+            type: string
+            example: MobileServiceDomain
+        - in: header
+          name: X-Idaas-Rest-Authorization
+          schema:
+            type: string 
+            example: UIDPASSWORD cred="base64(Idaas-Rest-Token-Value)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                X-Idaas-Rest-Subject-Type:
+                  type: string
+                  example: "USERCREDENTIAL"
+                X-Idaas-Rest-Subject-Username:
+                  type: string
+                  example: "lombarj2@telkom.co.za"
+                X-Idaas-Rest-Subject-Password:
+                  type: string
+                  example: "11111111"
+                X-Idaas-Rest-New-Token-Type-To-Create:
+                  type: string
+                  example: "CLIENTREGHANDLE"
+                clientId:
+                  type: string
+                  example: "Telkom"
+      responses:
+        '200':
+          description: Access token generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  X-Idaas-Rest-Provider-Type:
+                    type: string
+                    example: OAM_11G
+                  X-Idaas-Rest-Token-Type:
+                    type: string
+                    example: USERTOKEN
+                  X-Idaas-Rest-Token-Value:
+                    type: string
+                    example: lzqBdVMtoMjnnRnQWBuFwYhEIFCIEPxdL9c/yM4iFNOrzQCqoQmv1Iv59vcy8/ZDI2GPWqIJfV5Cv0aiJ5JgvcZqROHlQrD1MoCynvFlLd0Gl2jZ4S/BHt4RMMD0SqTeowraCglFQugCMOBUefw7XMyvGpSniomQw1QQtJCTCus98AEahy6A5h/gvRtXea/x1dRbRLujbpNEa3khZdyFvM68AQoPCt+9/G5Y8xu0/nXsqIkRYbHetaL44oQN3U2kPU0878JKVHeuyEdTnxldjfEzyQhpkGkPsHAOCMHYs/ZJ8uuCqOqXaWztwkRytcxQLdYn88OvQCHGhX7ndI1Fq7EnVPmaDC3L5QszpSWWvOkQnlwqvJkd7fBfHYXCUXzjTMZ2wVvRXTSzJRJREfesLYeziKQO+EoYel47obNeQ/bXvKijK+FsoQ7LJI60feozbFCkkzQVx1Web9+0Ho1mssGAZEkVe73JMjO49njjxa+v7zif0YvQaIxPy9+B48ku0fYBam13bzXIBKQD77jt3A==
+                  X-Idaas-Rest-User-Principal:
+                    type: string
+                    example: lombarj2@telkom.co.za
+
+  /oic_rest/rest/mobileoamauthentication/acesss:
+     post:
+      summary: Generate an access token for the protected resource
+      operationId: generateAccessToken
+      parameters:
+        - in: header
+          name: X-IDAAS-SERVICEDOMAIN
+          schema:
+            type: string
+            example: MobileServiceDomain
+        - in: header
+          name: X-Idaas-Rest-Authorization
+          schema:
+            type: string 
+            example: UIDPASSWORD cred="base64(Idaas-Rest-Token-Value)"
+      requestBody:
+        description: Request body to generate the access token
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                X-Idaas-Rest-Subject-Type:
+                  type: string
+                  example: TOKEN
+                X-Idaas-Rest-Subject-Value:
+                  type: string
+                  example: lzqBdVMtoMjnnRnQWBuFwYhEIFCIEPxdL9c/yM4iFNOrzQCqoQmv1Iv59vcy8/ZDI2GPWqIJfV5Cv0aiJ5JgvcZqROHlQrD1MoCynvFlLd0Gl2jZ4S/BHt4RMMD0SqTeowraCglFQugCMOBUefw7XMyvGpSniomQw1QQtJCTCus98AEahy6A5h/gvRtXea/x1dRbRLujbpNEa3khZdyFvM68AQoPCt+9/G5Y8xu0/nXsqIkRYbHetaL44oQN3U2kPU0878JKVHeuyEdTnxldjfEzyQhpkGkPsHAOCMHYs/ZJ8uuCqOqXaWztwkRytcxQLdYn88OvQCHGhX7ndI1Fq7EnVPmaDC3L5QszpSWWvOkQnlwqvJkd7fBfHYXCUXzjTMZ2wVvRXTSzJRJREfesLYeziKQO+EoYel47obNeQ/bXvKijK+FsoQ7LJI60feozbFCkkzQVx1Web9+0Ho1mssGAZEkVe73JMjO49njjxa+v7zif0YvQaIxPy9+B48ku0fYBam13bzXIBKQD77jt3A==
+                X-Idaas-Rest-Application-Context:
+                  type: string
+                  example: encquery%3DxzTXUa3DXZLM97tAuwKEtLMHEcg5L6xgr%2Bsdw1nEglCDPSXrk%2F4V4ANZSG8kzJGNNbsbqdGVIh5%2BVwRDqJ0J2n3nwk%2BjZrHZMNs1E74OPkmY7A7nr4RW2MiqFfS56jD7BLrxtdrNBcVDdT0QUuykB%2FvZmAsW3YQs2nTIB0ZHintlP%2BDg5huEzMqg54F5jiXkrCvgJuHInH7IhJyq2IgFILd76nWNHQg0j1AN%2FwSogLPqQjradvbZwMUChq3KNyV%2B1Da6iMyoE5Y3wwfvm2kszJ3UPZoGrJV%2F4jb6vfwp9gW%2BLsatuhWRbmXi4YmmiEn835OG5wTW6OescBfLCV4DYw%3D%3D%20agentid%3DECDEV05_7780%20ver%3D1%20crmethod%3D2
+                X-Idaas-Rest-Application-Resource:
+                  type: array
+                  items:
+                    type: string
+                  example: 
+                  - /onnet/protected/api/getFreeResource
+                X-Idaas-Rest-New-Token-Type-To-Create:
+                  type: string
+                  example: ACCESSTOKEN
+      responses:
+        '200':
+          description: Access token generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  X-Idaas-Rest-Provider-Type:
+                    type: string
+                    example: OAM_11G
+                  X-Idaas-Rest-Token-Type:
+                    type: string
+                    example: ACCESSTOKEN
+                  X-Idaas-Rest-Token-Value:
+                    type: string
+                    example: lHZ%2B8yWF4rUYS7GbUnGgU%2FQ64KcxljZGTZ%2Bh1JF8d%2BkafS6FgjZkMLanMxS2fbmvM6QuvpAM88ewImqoX4bZP%2B34%2BRkLtqOjfo5wruQ0Hgs3c%2FCg8CAIpkolJvXtV08hJHxhgRlxdlosSD9qkcAXd%2BnEhIVLW6Jew5JqLpxhEvXctmeJHfqk65Ma61boZiZ1H7ftdfxCMxCrK5pjAxrbfwpyzH4rq9S9VfwhDcLmirumkBGpic7BKAebO6hn%2B0lu4i4FO0atp8aqdWx%2BEHqDbXZ6Axk8vRLT203aJsDTjdqWyws25Pn207gR1JCSg2E8EQL%2FqLgRwtebpzAMveLqw5vqde%2BB7Ha8%2Fp5z6se0TcMozvx7Snh7%2BKGpmAJX428zNl514LD%2FTIggZf4PnC9VjYc%2FyHT6toodMyPIN8BwOPwcs5sxkEBntsXtAY6KvmDuAgkMliHb%2F43zHnBg0xr7SLTl8OrP9udmLpLkm3V%2B%2BQYBY4Yzr57Wuv0SiU0fUclgHkPHlsWIl%2Be2XkclM5ylKQ%3D%3D
+                  X-Idaas-Rest-User-Principal:
+                    type: string
+                    example: lombarj2@telkom.co.za
+        '400':
+          $ref: '#/components/responses/BusinessError'
+        '500':
+          $ref: '#/components/responses/TechnicalError'
+
+  /eportal/eCustomer/api/getCustomerAssociatedServices:
+    get:
+      summary: Get Customer Associated Services
+      description: Retrieve the list of services linked to a customer.
+      parameters:
+        - name: accountNumber
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+            default: "json"
+        - name: version
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              example:
+                resultCode: 0
+                resultMessageCode: "acc-ser-001"
+                payload:
+                  - accountNumber: "504525168"
+                    customerName: "John Doe"
+                    serviceNumber: "0670100549"
+                    status: "Active"
+        '400':
+          $ref: '#/components/responses/BusinessError'
+        '500':
+          $ref: '#/components/responses/TechnicalError'
+          
+  /eportal/eBilling/api/getAccountFinancialSummary:
+    post:
+      summary: Get Account Financial Summary
+      description: Retrieve financial summary for a given account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accountNumber:
+                  type: string
+                startDate:
+                  type: string
+                endDate:
+                  type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              example:
+                resultCode: 0
+                payload:
+                  financialAccount:
+                    accountNumber: "12345"
+                    totalOutstandingAmt: 300.01
+                    totalPaymentAmt: 400.02
+        '400':
+          $ref: '#/components/responses/BusinessError'
+        '500':
+          $ref: '#/components/responses/TechnicalError'
+
+  /eportal/eCustomer/api/getPuk:
+    post:
+      summary: Get PUK
+      description: Retrieve PUK number for a given MSISDN.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                msisdn:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              example:
+                resultCode: 0
+                payload:
+                  puk: "67317235"
+        '400':
+          $ref: '#/components/responses/BusinessError'
+        '500':
+          $ref: '#/components/responses/TechnicalError'
+
+  /eportal/eBilling/api/getBillingUsageHistoryDetail:
+    post:
+      summary: Get Billing Usage History Detail
+      description: Retrieve the history detail of billing usage.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accountnumber:
+                  type: string
+                serviceid:
+                  type: string
+                startdate:
+                  type: string
+                enddate:
+                  type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              example:
+                resultCode: 0
+                resultMessageCode: "api-buh-003"
+                payload:
+                  billingUsageHistoryDetail:
+                    accountNumber: "123456"
+                    startDate: "2023-01-01"
+                    endDate: "2023-03-01"
+                    usageHistoryDetails:
+                      - serviceId: "456"
+                        productType: "Data"
+                        usageAmount: "5GB"
+                        cost: 50
+        '400':
+          $ref: '#/components/responses/BusinessError'
+        '500':
+          $ref: '#/components/responses/TechnicalError'
+
+  /eportal/eBilling/api/getBillingUsageHistorySummary:
+    post:
+      summary: Get Billing Usage History Summary
+      description: Retrieve the summary of billing usage.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                summaryType:
+                  type: integer
+                billMonth:
+                  type: string
+                accountNumber:
+                  type: string
+                msisdn:
+                  type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              example:
+                resultCode: 0
+                resultMessageCode: "api-bus-003"
+                payload:
+                  billingUsageHistorySummary:
+                    resultRow:
+                      - columnName: ["Data Usage", "Call Duration"]
+                        columnValue: ["5GB", "120 mins"]
+        '400':
+          $ref: '#/components/responses/BusinessError'
+        '500':
+          $ref: '#/components/responses/TechnicalError'
+
+  /eportal/eCustomer/api/getSubscriberProducts:
+    get:
+      summary: Get Subscriber Products
+      description: Retrieve subscriber products for a given MSISDN.
+      parameters:
+        - name: msisdn
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              example:
+                resultCode: 0
+                resultMessageCode: "api-gsp-000"
+                payload:
+                  subercirberId: "2000080035671"
+                  msisdn: "0812674546"
+                  servicePackages:
+                    - productId: "S1407"
+                      productName: "MMS APN"
+                      status: "Active"
+        '400':
+          $ref: '#/components/responses/BusinessError'
+        '500':
+          $ref: '#/components/responses/TechnicalError'
+
+  /onnet/protected/api/getFreeResources:
+    get:
+      summary: Get Free Products
+      description: Returns the customers free resources. i.e. free minutes, SMSs, mobile data bundles, Wi-Fi data bundles
+      parameters:
+        - name: msisdn
+          in: query
+          required: true
+          description: MSISDN of either the MSISDN in context or an associated MSISDN
+          schema:
+            type: string
+            example: "0811111111"
+        - name: version
+          in: query
+          required: true
+          description: API version
+          schema:
+            type: integer
+            example: 1
+      responses:
+       "200":
+          description: Free resources successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resultCode:
+                    type: integer
+                    example: 0
+                  resultMessageCode:
+                    type: string
+                    example: "api-gfr-010"
+                  resultMessage:
+                    type: string
+                    example: "Free resources successfully retrieved."
+                  friendlyCustomerMessage:
+                    type: string
+                    example: ""
+                  payload:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        info:
+                          type: string
+                          example: "GPRS: 3221225472 Bytes remaining - Bytes used Expires on Wed Jul 01 2015"
+                        service:
+                          type: string
+                          example: "GPRS"
+                        subscriberFreeResource:
+                          type: object
+                          properties:
+                            endBillCycle:
+                              type: string
+                              example: "Wed Jul 01 2015"
+                            expiryDate:
+                              type: string
+                              example: "Tue Jun 30 2015"
+                            measure:
+                              type: string
+                              example: "Bytes"
+                            service:
+                              type: string
+                              example: "GPRS"
+                            startBillCycle:
+                              type: string
+                              example: "Wed Jul 01 2015"
+                            totalAmount:
+                              type: string
+                              example: "3221225472"
+                            totalAmountAndMeasure:
+                              type: string
+                              example: "3072 MB"
+                            type:
+                              type: string
+                              example: "5043"
+                            typeName:
+                              type: string
+                              example: "Included Telkom Mobile Night Surfer Data"
+                            usedAmount:
+                              type: string
+                              example: "-"
+                            usedAmountAndMeasure:
+                              type: string
+                              example: "-"
+       "400":
+            description: Validation error or bad request.
+            content:
+             application/json:
+              schema:
+                type: object
+                properties:
+                  resultCode:
+                    type: integer
+                    example: 1
+                  resultMessageCode:
+                    type: string
+                    example: "api-gfr-001"
+                  resultMessage:
+                    type: string
+                    example: "Validation message No msisdn in context"
+                  friendlyCustomerMessage:
+                    type: string
+                    example: "Invalid request. Please provide a valid MSISDN."
+       "401":
+            description: Unauthorized access - User not logged in.
+            content:
+             application/json:
+              schema:
+                type: object
+                properties:
+                  resultCode:
+                    type: integer
+                    example: 1
+                  resultMessageCode:
+                    type: string
+                    example: "api-gfr-006"
+                  resultMessage:
+                    type: string
+                    example: "No logged in user has been detected. User needs to be logged in to access the /protected version."
+                  friendlyCustomerMessage:
+                    type: string
+                    example: "User authentication required."
+       "500":
+            description: Technical exception or unexpected error.
+            content:
+             application/json:
+              schema:
+                type: object
+                properties:
+                  resultCode:
+                    type: integer
+                    example: -1
+                  resultMessageCode:
+                    type: string
+                    example: "api-gfr-013"
+                  resultMessage:
+                    type: string
+                    example: "Unable to retrieve free resources due to a technical exception."
+                  friendlyCustomerMessage:
+                    type: string
+                    example: "An unexpected error has occurred. Please try again later."

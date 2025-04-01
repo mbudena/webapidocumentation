@@ -1,1 +1,0 @@
-<swagger-ui src="orderSwagger.json"/>

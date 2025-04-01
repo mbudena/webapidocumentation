@@ -1,8 +1,8 @@
-site_name: ApiDocumentation
-site_url: https://motttt.github.io/ApiDocumentation/
+site_name: WebApiDocumentation
+site_url: https://motttt.github.io/WebApiDocumentation/
 
-site_description: Documentation for the use of order and service APIs
-site_author: Martin Colley
+site_description: Documentation for use of web APIs
+site_author: Noah Mbude
 
 plugins:
     - search
@@ -21,9 +21,5 @@ nav:
     - authorisation.md
     - errorCodes.md
     - troubleshooting.md
-  - 'Order API':
-    - orderSpecification.md
   - 'Service API':
     - serviceSpecification.md
-  - 'Ticket API':
-    - ticketSpecification.md

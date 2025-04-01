@@ -50,7 +50,7 @@ Internal preparation includes the following activities, which mimics the product
 
 Once the preparation is complete API calls can be made by the API consumer, which trigger ordering and service configuration operations in Telco internal OSS/BSS systems of the ETE environment, and API responses provide production realistic values, including validation failures.
 
-API requests therefore need to make use of valid values in the URL and payload, such as Deal IDs, ICCIDs, Order IDs and MSISDNs.
+API requests therefore need to make use of valid values in the URL and payload, such as Account numbers, MSISDNs.
 
 Values returned from API operations represent responses and statuses that the API Gateway receives from Telco internal OSS/BSS systems in the ETE environment.
 

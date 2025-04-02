@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="Noah Mbude" name="author"/><link href="https://motttt.github.io/WebApiDocumentation/simulator/" rel="canonical"/>
+<link href="../img/favicon.ico" rel="shortcut icon"/>
+<title>API Environments, and the API simulator - WebApiDocumentation</title>
+<link href="../css/theme.css" rel="stylesheet"/>
+<link href="../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<script>
+        // Current page data
+        var mkdocs_page_name = "API Environments, and the API simulator";
+        var mkdocs_page_input_path = "simulator.md";
+        var mkdocs_page_url = "/WebApiDocumentation/simulator/";
+      </script>
+<!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-72998NWP0W"></script>
+<script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', "G-72998NWP0W");
+      </script>
+</head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href=".."> WebApiDocumentation
+        </a><div role="search">
+<form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption"><span class="caption-text">Introduction</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../apiOperationList/">API Operation List</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onboardingProcess/">Onboarding Process</a>
+</li>
+<li class="toctree-l1 current"><a class="reference internal current" href="./">API Environments, and the API simulator</a>
+<ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="#api-simulator">API Simulator</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#end-to-end-environment-ete">End to End environment (ETE)</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#production-environment">Production Environment</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../authorisation/">Authentication and Authorization</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../errorCodes/">Error Codes</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting/">Troubleshooting</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Service API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../serviceSpecification/">API Documentation</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="Mobile navigation menu" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="..">WebApiDocumentation</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content"><div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Docs" class="icon icon-home" href=".."></a></li>
+<li class="breadcrumb-item">Introduction</li>
+<li class="breadcrumb-item active">API Environments, and the API simulator</li>
+<li class="wy-breadcrumbs-aside">
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div class="section" itemprop="articleBody">
+<h1 id="api-environments-and-the-api-simulator">API Environments, and the API simulator</h1>
+<p>Before access to the production API Gateway is provided, testing of API consumer code needs to complete, and be signed off. In order to facilitate development and testing, non-production environments are made available.</p>
+<p>The API environments are as follows:</p>
+<ul>
+<li>API Simulator</li>
+<li>End to End (ETE) Environment</li>
+<li>Production Environment</li>
+</ul>
+<p>These environments differ, as detailed in the following sections.</p>
+<h2 id="api-simulator">API Simulator</h2>
+<p>The API simulator is an instance of the API gateway deployed to a non-production environment, using stubbed internal integration instead of connecting to the various Telco internal systems that the ETE and Production environments do.</p>
+<p>This environment uses a pre-built profile, shared by all users of the environment.</p>
+<p>Validation of some attributes in the API payloads does not take place, as it would on any other environment. Specifically, ICCIDs Deal ID, and MSISDNs are not validated.</p>
+<p>This allows development testing to proceed without the configuration of per API consumer profiles,
+Deal Sheets, MSISDNs, and SIM inventories.</p>
+<p>Responses from Telco internal systems are typical of production, and the same results returned for all requests for any specific API operation. For example, in the case of a successful POST Order API operation, the same Order ID and MSISDN will always be returned.</p>
+<p>Validation of API request json payloads are therefore validated only for specific aspects, such as:</p>
+<ul>
+<li>Correct http headers</li>
+<li>Correct Authentication (using a shared credential)</li>
+<li>Correct json payload structure</li>
+</ul>
+<p>Simulation of specific failure modes is accommodated, by the inclusion of a http header.</p>
+<p>This allow for unit testing of API consumer code.</p>
+<p>Once an API consumer's code is able to successfully call all the API operations in scope, the API consumer can sign-off on unit testing, and proceed to End to End testing.</p>
+<h2 id="end-to-end-environment-ete">End to End environment (ETE)</h2>
+<p>Use of an ETE is governed by the IT Change Request (CR) process, and is scheduled into a Quarterly Release.</p>
+<p>To enable use of the ETE environment, some internal preparation is required, that is managed as part of the CR process.</p>
+<p>Internal preparation includes the following activities, which mimics the production environment:</p>
+<ul>
+<li>Creation of records in the Telco OSS/BSS systems for the API consumer Customer</li>
+<li>Creation of a profile with authentication and authorisation detail matching the BSS/OSS system</li>
+<li>Creation of test data for use on the ETE environment, such as MSISDNs and ICCIDs</li>
+<li>Determination of Deals IDs valid on the ETE environment</li>
+</ul>
+<p>Once the preparation is complete API calls can be made by the API consumer, which trigger ordering and service configuration operations in Telco internal OSS/BSS systems of the ETE environment, and API responses provide production realistic values, including validation failures.</p>
+<p>API requests therefore need to make use of valid values in the URL and payload, such as Account numbers, MSISDNs.</p>
+<p>Values returned from API operations represent responses and statuses that the API Gateway receives from Telco internal OSS/BSS systems in the ETE environment.</p>
+<h2 id="production-environment">Production Environment</h2>
+<p>Similar to the ETE environment, there is preparation required on the Production environment.</p>
+<p>In this case, ICCIDs represent physical SIMs, and the Deal IDs would correspond to Deals found in the Deal Sheet provided by the Telco Account Manager. MSISDNs used in API operations would need to represent actual mobile services.</p>
+</div>
+</div><footer>
+<div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-left" href="../onboardingProcess/" title="Onboarding Process"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+<a class="btn btn-neutral float-right" href="../authorisation/" title="Authentication and Authorization">Next <span class="icon icon-circle-arrow-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="Versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span><a href="../onboardingProcess/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../authorisation/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script src="../js/jquery-3.6.0.min.js"></script>
+<script>var base_url = "..";</script>
+<script src="../js/theme_extra.js"></script>
+<script src="../js/theme.js"></script>
+<script src="../search/main.js"></script>
+<script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+<script>
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        </script></body>
+</html>

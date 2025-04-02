@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="Noah Mbude" name="author"/><link href="https://motttt.github.io/WebApiDocumentation/onboardingProcess/" rel="canonical"/>
+<link href="../img/favicon.ico" rel="shortcut icon"/>
+<title>Onboarding Process - WebApiDocumentation</title>
+<link href="../css/theme.css" rel="stylesheet"/>
+<link href="../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<script>
+        // Current page data
+        var mkdocs_page_name = "Onboarding Process";
+        var mkdocs_page_input_path = "onboardingProcess.md";
+        var mkdocs_page_url = "/WebApiDocumentation/onboardingProcess/";
+      </script>
+<!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-72998NWP0W"></script>
+<script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', "G-72998NWP0W");
+      </script>
+</head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href=".."> WebApiDocumentation
+        </a><div role="search">
+<form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption"><span class="caption-text">Introduction</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../apiOperationList/">API Operation List</a>
+</li>
+<li class="toctree-l1 current"><a class="reference internal current" href="./">Onboarding Process</a>
+<ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="#onboarding-phases">Onboarding Phases</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#phase-i-documentation">Phase I: Documentation</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#phase-ii-coding-and-unit-testing">Phase II: Coding and Unit testing</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#phase-iii-end-to-end-testing">Phase III: End to End testing</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#phase-iv-production-implementation">Phase IV: Production implementation</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../simulator/">API Environments, and the API simulator</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../authorisation/">Authentication and Authorization</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../errorCodes/">Error Codes</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting/">Troubleshooting</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Service API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../serviceSpecification/">API Documentation</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="Mobile navigation menu" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="..">WebApiDocumentation</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content"><div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Docs" class="icon icon-home" href=".."></a></li>
+<li class="breadcrumb-item">Introduction</li>
+<li class="breadcrumb-item active">Onboarding Process</li>
+<li class="wy-breadcrumbs-aside">
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div class="section" itemprop="articleBody">
+<h1 id="onboarding-process">Onboarding Process</h1>
+<h2 id="onboarding-phases">Onboarding Phases</h2>
+<p>For clarity, the onboarding of API consumers is split into four phases:</p>
+<ul>
+<li>Phase I: Documentation</li>
+<li>Phase II: Coding and Unit testing</li>
+<li>Phase III: End to End testing</li>
+<li>Phase IV: Production implementation</li>
+</ul>
+<h3 id="phase-i-documentation">Phase I: Documentation</h3>
+<p>The documentation phase precedes the provision of access to API platforms.</p>
+<p>The following activities are relevant to this phase:</p>
+<ul>
+<li>Scope Determination: Documenting which operations will be used by the API consumer, which in turn determines the scope items for the Telco internal IT Change Request process, and therefore also the test result schedules.</li>
+<li>API documentation: Provision of access to API technical documentation.</li>
+</ul>
+<h3 id="phase-ii-coding-and-unit-testing">Phase II: Coding and Unit testing</h3>
+<p>Once the documentation is in place, access to a sandbox environment, that simulates the APIs in scope, is granted. The intention of this phase is to allow the consumer to exercise the API, observe typical behaviour, and unit test code, without an assigned ETE environment.</p>
+<p>The following activities are relevant to this phase:</p>
+<ul>
+<li>Technical start-up meeting: The API support team, and the API consumer technical team meet to provide a high level description of API usage, and demonstrate of the use of the sandbox.</li>
+<li>Sandbox Access: Granting of access to a simulator environment for the API operations in scope.</li>
+<li>API Consumer coding: The writing of software by the API consumer technical team.</li>
+<li>API development support: The API Support team is available for scheduled sessions to answer questions, provide guidance, and assist with troubleshooting.</li>
+<li>API Consumer unit testing: The testing of API consumer code, using the API sandbox</li>
+<li>Completion acceptance: Acceptance of API consumer code for the API operations in scope.</li>
+<li>End to End test scheduling: The assignment of the API Consumer Onboarding CR to a Scheduled Release. There are four CR Scheduled Releases in a year, and end to end testing for the API Consumer needs to be assigned to one of these.</li>
+</ul>
+<h3 id="phase-iii-end-to-end-testing">Phase III: End to End testing</h3>
+<p>Once the CR scheduled release window opens, an end to end (ETE) testing environment is assigned, and the complete end to end process for API operations in scope can be validated.</p>
+<p>The following activities are relevant to this phase:</p>
+<ul>
+<li>Assignment of CR Project Manager: An IT project manager (PM) is assigned to the CR, to drive delivery.</li>
+<li>Assignment of ETE environment: The IT PM negotiates for a telco internal platform, with integrated back-end systems, to the Onboarding CR, for the duration of the scheduled release.</li>
+<li>Preparation of ETE environments: The teams responsible for the various integrated back-end environments deploy production versions of software to their ETE environment integrated platforms, and complete readiness testing (Business Unit Availability Testing).</li>
+<li>Creation of Test Data: The data entities in the integrated back ends necessary for end to end testing of the API operations in scope are created by the SQA team.</li>
+<li>Creation of API Consumer Gateway Profile: The profile linked to API Authentication and Authorisation is created on the ETE environment, and API endpoint and access details shared with the API consumer.</li>
+<li>Sharing of ETE testing data with the API consumer: Details of created and consumable resources, and reference data for the ENT testing is shared with the API Consumer technical team</li>
+<li>Conducting of End to End testing: API Consumer code for each operation in scope is tested against the End to End environment.</li>
+<li>ETE Troubleshooting: The API Support team is available for scheduled sessions to answer questions, provide guidance, and assist with troubleshooting of testing failures.</li>
+<li>Completion acceptance: Acceptance of API consumer code for the API operations in scope, based on successful End to End testing for each API operation.</li>
+</ul>
+<h3 id="phase-iv-production-implementation">Phase IV: Production implementation</h3>
+<p>Once successful end to end testing has been signed off, a production release date is scheduled.</p>
+<p>The following activities are relevant to this phase:</p>
+<ul>
+<li>Creation of Production API Consumer Gateway Profile: The profile linked to API Authentication and Authorisation is created on the production environment, and API endpoint and access details shared with the API consumer.</li>
+<li>The API consumer can now proceed with API transactions on the production system.</li>
+<li>Production Support: The first line API support team can be contacted using the API support process, and Production Incidents will be logged on behalf of the API consumer, if further investigation is required.</li>
+</ul>
+</div>
+</div><footer>
+<div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-left" href="../apiOperationList/" title="API Operation List"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+<a class="btn btn-neutral float-right" href="../simulator/" title="API Environments, and the API simulator">Next <span class="icon icon-circle-arrow-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="Versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span><a href="../apiOperationList/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../simulator/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script src="../js/jquery-3.6.0.min.js"></script>
+<script>var base_url = "..";</script>
+<script src="../js/theme_extra.js"></script>
+<script src="../js/theme.js"></script>
+<script src="../search/main.js"></script>
+<script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+<script>
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        </script></body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="Noah Mbude" name="author"/><link href="https://motttt.github.io/WebApiDocumentation/authorisation/" rel="canonical"/>
+<link href="../img/favicon.ico" rel="shortcut icon"/>
+<title>Authentication and Authorization - WebApiDocumentation</title>
+<link href="../css/theme.css" rel="stylesheet"/>
+<link href="../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<script>
+        // Current page data
+        var mkdocs_page_name = "Authentication and Authorization";
+        var mkdocs_page_input_path = "authorisation.md";
+        var mkdocs_page_url = "/WebApiDocumentation/authorisation/";
+      </script>
+<!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-72998NWP0W"></script>
+<script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', "G-72998NWP0W");
+      </script>
+</head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href=".."> WebApiDocumentation
+        </a><div role="search">
+<form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption"><span class="caption-text">Introduction</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../apiOperationList/">API Operation List</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../onboardingProcess/">Onboarding Process</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../simulator/">API Environments, and the API simulator</a>
+</li>
+<li class="toctree-l1 current"><a class="reference internal current" href="./">Authentication and Authorization</a>
+<ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="#basic-access-authentication">Basic Access Authentication</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#references-and-utilities">References and Utilities</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../errorCodes/">Error Codes</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting/">Troubleshooting</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Service API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../serviceSpecification/">API Documentation</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="Mobile navigation menu" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="..">WebApiDocumentation</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content"><div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Docs" class="icon icon-home" href=".."></a></li>
+<li class="breadcrumb-item">Introduction</li>
+<li class="breadcrumb-item active">Authentication and Authorization</li>
+<li class="wy-breadcrumbs-aside">
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div class="section" itemprop="articleBody">
+<h1 id="authentication-and-authorization">Authentication and Authorization</h1>
+<p>Authentication is required to access the Gateway APIs.</p>
+<p>Standard <strong>Basic Access Authentication</strong>, built into the HTTP protocol, is used.</p>
+<p>Usernames and passwords are re-used from the Telkom Portal Identity and Access Management (IAM) system.</p>
+<p>This allows for password changes and resets to be manage on the Telkom Web GUI, in the same way as used for applications such as Telkom Consumer Self Service and Enterprise Self Service Portal (ESSP).</p>
+<p>NOTE: If the password is changed by a Telkom Web GUI user in the normal course of use, the API Gateway client implementation must be adjusted accordingly.</p>
+<h2 id="basic-access-authentication">Basic Access Authentication</h2>
+<p>For convenience, the standard Basic Access Authentication (BAA) scheme defined in RFC 7617 is describe here, explained in the context of the Telkom Portal IAM platform.</p>
+<p>The starting point is the username and password for a registered user on Telkom Portal.</p>
+<p>For these to be usable by an API Gateway client, a profile needs to be constructed by the API Gateway Support team linking these credentials to the correct Telkom CRM Customer. This step occurs during the Phase III of the Onboarding process for the End to End verification environment, and during Phase IV for the Production environment. On the Simulator environment, in Phase II of the Onboarding process, a shared credential is used.</p>
+<p>Note that for a credential to be usable on API Gateway, neither the username nor password should contain control characters, or the colon character (<code>:</code>) as this is used in the BAA scheme as a separator.</p>
+<p>With the <code>username</code> and <code>password</code> described above, the <em>Authorization</em> HTTP header field is constructed and used in API Gateway HTTP requests as follows:</p>
+<ol>
+<li>Create a string from the username and password separated by a colon (<code>:</code>).</li>
+<li>Base64 encode the string created in step 1.</li>
+<li>Prepend the Base64(username:password) string with the string <code>Basic</code> (note the space).</li>
+<li>This results in the string <code>Basic Base64(username:password)</code></li>
+<li>When constructing an API Gateway request, the <code>Basic Base64(username:password)</code> string is added as an HTTP header field with the header name <code>Authorization</code>.</li>
+</ol>
+<h3 id="example">Example</h3>
+<ol>
+<li>Given a <code>username</code> <em>ExampleUsername</em>, and a <code>password</code> <em>ExamplePassword</em>, the string to be Base64 encoded is: <em>ExampleUsername:ExamplePassword</em></li>
+<li><code>Base64(ExampleUsername:ExamplePassword)</code> equates to <code>RXhhbXBsZVVzZXJuYW1lOkV4YW1wbGVQYXNzd29yZA==</code></li>
+<li><code>Basic Base64(username:password)</code> equates to <code>Basic RXhhbXBsZVVzZXJuYW1lOkV4YW1wbGVQYXNzd29yZA==</code></li>
+<li>As calculated above the <code>Authorization</code> header value is <code>Basic RXhhbXBsZVVzZXJuYW1lOkV4YW1wbGVQYXNzd29yZA==</code></li>
+<li>The required HTTP header line is therefore</li>
+</ol>
+<pre><code class="language-HTTP">Authorization: Basic RXhhbXBsZVVzZXJuYW1lOkV4YW1wbGVQYXNzd29yZA==
+</code></pre>
+<h2 id="references-and-utilities">References and Utilities</h2>
+<ul>
+<li>Online Base64 encoder: <a href="https://www.base64encode.org/">https://www.base64encode.org/</a></li>
+<li>Basic Access Authentication RFP: <a href="https://www.rfc-editor.org/rfc/pdfrfc/rfc7617.txt.pdf">https://www.rfc-editor.org/rfc/pdfrfc/rfc7617.txt.pdf</a></li>
+</ul>
+</div>
+</div><footer>
+<div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-left" href="../simulator/" title="API Environments, and the API simulator"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+<a class="btn btn-neutral float-right" href="../errorCodes/" title="Error Codes">Next <span class="icon icon-circle-arrow-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="Versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span><a href="../simulator/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../errorCodes/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script src="../js/jquery-3.6.0.min.js"></script>
+<script>var base_url = "..";</script>
+<script src="../js/theme_extra.js"></script>
+<script src="../js/theme.js"></script>
+<script src="../search/main.js"></script>
+<script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+<script>
+            window.update_swagger_ui_iframe_height = function (id) {
+                var iFrameID = document.getElementById(id);
+                if (iFrameID) {
+                    full_height = (iFrameID.contentWindow.document.body.scrollHeight + 80) + "px";
+                    iFrameID.height = full_height;
+                    iFrameID.style.height = full_height;
+                }
+            }
+        
+            let iframe_id_list = []
+            var iframes = document.getElementsByClassName("swagger-ui-iframe");
+            for (var i = 0; i < iframes.length; i++) { 
+                iframe_id_list.push(iframes[i].getAttribute("id"))
+            }
+        
+            let ticking = true;
+            
+            document.addEventListener('scroll', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(()=> {
+                        let half_vh = window.innerHeight/2;
+                        for(var i = 0; i < iframe_id_list.length; i++) {
+                            let element = document.getElementById(iframe_id_list[i])
+                            if(element==null){
+                                return
+                            }
+                            let diff = element.getBoundingClientRect().top
+                            if(element.contentWindow.update_top_val){
+                                element.contentWindow.update_top_val(half_vh - diff)
+                            }
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        </script></body>
+</html>

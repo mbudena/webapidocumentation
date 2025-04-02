@@ -20,4 +20,4 @@ See the *Authentication and Authorization* section for details.
 
 ## OpenAPI Specification
 
-You can find the full OpenAPI spec in [`OpenAPI.yaml`](OpenAPI.yaml).
+<swagger-ui src="serviceSwagger.json"/>

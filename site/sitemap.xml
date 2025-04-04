@@ -1,38 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
+         <loc>https://motttt.github.io/WebApiDocumentation/</loc>
+         <lastmod>2025-04-03</lastmod>
+    </url>
+    <url>
          <loc>https://motttt.github.io/WebApiDocumentation/apiOperationList/</loc>
-         <lastmod>2025-04-01</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2025-04-03</lastmod>
     </url>
     <url>
          <loc>https://motttt.github.io/WebApiDocumentation/authorisation/</loc>
-         <lastmod>2025-04-01</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2025-04-03</lastmod>
     </url>
     <url>
          <loc>https://motttt.github.io/WebApiDocumentation/errorCodes/</loc>
-         <lastmod>2025-04-01</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2025-04-03</lastmod>
     </url>
     <url>
          <loc>https://motttt.github.io/WebApiDocumentation/onboardingProcess/</loc>
-         <lastmod>2025-04-01</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2025-04-03</lastmod>
     </url>
     <url>
          <loc>https://motttt.github.io/WebApiDocumentation/serviceSpecification/</loc>
-         <lastmod>2025-04-01</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2025-04-03</lastmod>
     </url>
     <url>
          <loc>https://motttt.github.io/WebApiDocumentation/simulator/</loc>
-         <lastmod>2025-04-01</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2025-04-03</lastmod>
     </url>
     <url>
          <loc>https://motttt.github.io/WebApiDocumentation/troubleshooting/</loc>
-         <lastmod>2025-04-01</lastmod>
-         <changefreq>daily</changefreq>
+         <lastmod>2025-04-03</lastmod>
     </url>
 </urlset>

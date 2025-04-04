@@ -4,20 +4,20 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="Noah Mbude" name="author"/><link href="https://motttt.github.io/WebApiDocumentation/apiOperationList/" rel="canonical"/>
-<link href="../img/favicon.ico" rel="shortcut icon"/>
-<title>API Operation List - WebApiDocumentation</title>
-<link href="../css/theme.css" rel="stylesheet"/>
-<link href="../css/theme_extra.css" rel="stylesheet"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="Documentation for use of web APIs" name="description"/><meta content="Noah Mbude" name="author"/><link href="https://motttt.github.io/WebApiDocumentation/" rel="canonical"/>
+<link href="img/favicon.ico" rel="shortcut icon"/>
+<title>WebApiDocumentation</title>
+<link href="css/theme.css" rel="stylesheet"/>
+<link href="css/theme_extra.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
 <script>
         // Current page data
-        var mkdocs_page_name = "API Operation List";
-        var mkdocs_page_input_path = "apiOperationList.md";
-        var mkdocs_page_url = "/WebApiDocumentation/apiOperationList/";
+        var mkdocs_page_name = "API Gateway Technical Documentation";
+        var mkdocs_page_input_path = "README.md";
+        var mkdocs_page_url = "/WebApiDocumentation/";
       </script>
 <!--[if lt IE 9]>
-      <script src="../js/html5shiv.min.js"></script>
+      <script src="js/html5shiv.min.js"></script>
     <![endif]-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
@@ -35,36 +35,32 @@
 <nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
 <div class="wy-side-scroll">
 <div class="wy-side-nav-search">
-<a class="icon icon-home" href=".."> WebApiDocumentation
+<a class="icon icon-home" href="."> WebApiDocumentation
         </a><div role="search">
-<form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+<form action="./search.html" class="wy-form" id="rtd-search-form" method="get">
 <input aria-label="Search docs" name="q" placeholder="Search docs" title="Type search term here" type="text"/>
 </form>
 </div>
 </div>
 <div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
 <p class="caption"><span class="caption-text">Introduction</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal current" href="#">API Operation List</a>
-<ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="#service-management">Service Management</a>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="apiOperationList/">API Operation List</a>
 </li>
-</ul>
+<li class="toctree-l1"><a class="reference internal" href="onboardingProcess/">Onboarding Process</a>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../onboardingProcess/">Onboarding Process</a>
+<li class="toctree-l1"><a class="reference internal" href="simulator/">API Environments, and the API simulator</a>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../simulator/">API Environments, and the API simulator</a>
+<li class="toctree-l1"><a class="reference internal" href="authorisation/">Authentication and Authorization</a>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../authorisation/">Authentication and Authorization</a>
+<li class="toctree-l1"><a class="reference internal" href="errorCodes/">Error Codes</a>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../errorCodes/">Error Codes</a>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../troubleshooting/">Troubleshooting</a>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting/">Troubleshooting</a>
 </li>
 </ul>
 <p class="caption"><span class="caption-text">Service API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../serviceSpecification/">API Documentation</a>
+<li class="toctree-l1"><a class="reference internal" href="serviceSpecification/">API Documentation</a>
 </li>
 </ul>
 </div>
@@ -73,14 +69,13 @@
 <section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
 <nav aria-label="Mobile navigation menu" class="wy-nav-top" role="navigation">
 <i class="fa fa-bars" data-toggle="wy-nav-top"></i>
-<a href="..">WebApiDocumentation</a>
+<a href=".">WebApiDocumentation</a>
 </nav>
 <div class="wy-nav-content">
 <div class="rst-content"><div aria-label="breadcrumbs navigation" role="navigation">
 <ul class="wy-breadcrumbs">
-<li><a aria-label="Docs" class="icon icon-home" href=".."></a></li>
-<li class="breadcrumb-item">Introduction</li>
-<li class="breadcrumb-item active">API Operation List</li>
+<li><a aria-label="Docs" class="icon icon-home" href="."></a></li>
+<li class="breadcrumb-item active">API Gateway Technical Documentation</li>
 <li class="wy-breadcrumbs-aside">
 </li>
 </ul>
@@ -88,25 +83,22 @@
 </div>
 <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
 <div class="section" itemprop="articleBody">
-<h1 id="api-operation-list">API Operation List</h1>
-<h2 id="service-management">Service Management</h2>
+<h1 id="api-gateway-technical-documentation">API Gateway Technical Documentation</h1>
+<h2 id="scope">Scope</h2>
+<p>This documentation is intended to provide the necessary information required to develop clients for services provided by the API Gateway.</p>
+<p>It includes specifications for each resource API in OpenAPI format, as well as supporting process and error response interpretation documentation.</p>
+<p>The following resources APIs are supported:</p>
 <ul>
-<li>Account Summary</li>
-<li>List all MSISDNs</li>
-<li>Get Invoice</li>
-<li>Get list of all VAS</li>
-<li>Get available service balances</li>
-<li>Detailed service balance on usage</li>
-<li>Suspend Service</li>
-<li>Resume Service</li>
-<li>Get Subscriber Details</li>
-<li>Get Puk Pin</li>
+<li>Service Management</li>
+</ul>
+<p>Supporting information includes:</p>
+<ul>
+<li>API Gateway Client Onboarding Process</li>
+<li>API Gateway Simulator Usage</li>
+<li>API Gateway Error Response explanations</li>
 </ul>
 </div>
 </div><footer>
-<div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
-<a class="btn btn-neutral float-right" href="../onboardingProcess/" title="Onboarding Process">Next <span class="icon icon-circle-arrow-right"></span></a>
-</div>
 <hr/>
 <div role="contentinfo">
 <!-- Copyright etc -->
@@ -120,14 +112,13 @@
 </div>
 <div aria-label="Versions" class="rst-versions" role="note">
 <span class="rst-current-version" data-toggle="rst-current-version">
-<span><a href="../onboardingProcess/" style="color: #fcfcfc">Next »</a></span>
 </span>
 </div>
-<script src="../js/jquery-3.6.0.min.js"></script>
-<script>var base_url = "..";</script>
-<script src="../js/theme_extra.js"></script>
-<script src="../js/theme.js"></script>
-<script src="../search/main.js"></script>
+<script src="js/jquery-3.6.0.min.js"></script>
+<script>var base_url = ".";</script>
+<script src="js/theme_extra.js"></script>
+<script src="js/theme.js"></script>
+<script src="search/main.js"></script>
 <script>
         jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
@@ -172,3 +163,7 @@
             });
         </script></body>
 </html>
+<!--
+MkDocs version : 1.6.1
+Build Date UTC : 2025-04-03 10:30:28.935317+00:00
+-->

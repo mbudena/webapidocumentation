@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "ecdev02selfservice.telkom.co.za"
+            "url": "ecdev02selfservice.telkom.co.za" 
         }
     ],
     "components": {

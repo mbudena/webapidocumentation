@@ -58,4 +58,4 @@ Values returned from API operations represent responses and statuses that the AP
 
 Similar to the ETE environment, there is preparation required on the Production environment.
 
-In this case, ICCIDs represent physical SIMs, and the Deal IDs would correspond to Deals found in the Deal Sheet provided by the Telco Account Manager. MSISDNs used in API operations would need to represent actual mobile services.
+In this case, ICCIDs represent physical SIMs, MSISDNs used in API operations would need to represent actual mobile services.

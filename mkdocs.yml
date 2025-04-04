@@ -20,6 +20,5 @@ nav:
     - simulator.md
     - authorisation.md
     - errorCodes.md
-    - troubleshooting.md
   - 'Service API':
     - serviceSpecification.md

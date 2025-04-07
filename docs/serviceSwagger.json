@@ -1,88 +1,134 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Eportal API",
-        "description": "API documentation for ePortal services.",
+        "title": "Web API Testing Collection",
         "version": "1.0.0"
     },
     "servers": [
         {
-            "url": "ecdev02selfservice.telkom.co.za" 
+            "url": "https://ecdev02selfservice.telkom.co.za"
         }
     ],
     "components": {
         "securitySchemes": {
-            "OAuth2": {
+            "oauth2": {
+                "type": "http",
+                "scheme": "noauth"
+            },
+            "login": {
                 "type": "oauth2",
                 "flows": {
-                    "password": {
-                        "tokenUrl": "https://loginecdev02.telkom.co.za/oic_rest/rest/mobileoamauthentication/acesss",
-                        "scopes": {
-                            "read": "Access to read data",
-                            "write": "Access to write data"
-                        }
+                    "implicit": {
+                        "authorizationUrl": "https://loginecdev02.telkom.co.za",
+                        "scopes": {}
                     }
                 }
             }
         },
-        "responses": {
-            "NoError": {
-                "description": "No error has occurred.",
-                "content": {
-                    "application/json": {
-                        "schema": {
+        "schemas": {
+            "authrequestbodies": {
+                "type": "object",
+                "required": [
+                    "X-Idaas-Rest-Subject-Type",
+                    "X-Idaas-Rest-Subject-Username",
+                    "X-Idaas-Rest-Subject-Password",
+                    "X-Idaas-Rest-New-Token-Type-To-Create",
+                    "clientId"
+                ],
+                "properties": {
+                    "X-Idaas-Rest-Subject-Type": {
+                        "type": "string"
+                    },
+                    "X-Idaas-Rest-Subject-Username": {
+                        "type": "string"
+                    },
+                    "X-Idaas-Rest-Subject-Password": {
+                        "type": "string"
+                    },
+                    "X-Idaas-Rest-New-Token-Type-To-Create": {
+                        "type": "string",
+                        "example": "CLIENTREGHANDLE"
+                    },
+                    "deviceProfile": {
+                        "type": "array",
+                        "items": {
                             "type": "object",
                             "properties": {
-                                "code": {
-                                    "type": "integer",
-                                    "example": 0
+                                "oracle:idm:claims:client:sdkversion": {
+                                    "type": "string"
                                 },
-                                "message": {
-                                    "type": "string",
-                                    "example": "Request successful"
+                                "oracle:idm:claims:client:ostype": {
+                                    "type": "string"
+                                },
+                                "oracle:idm:claims:client:osversion": {
+                                    "type": "string"
+                                },
+                                "hardwareIds": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
                                 }
                             }
                         }
+                    },
+                    "clientId": {
+                        "type": "string"
                     }
                 }
             },
-            "BusinessError": {
-                "description": "A business-related error has occurred.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "code": {
-                                    "type": "integer",
-                                    "example": 1
-                                },
-                                "message": {
-                                    "type": "string",
-                                    "example": "A business error has occurred"
-                                }
-                            }
-                        }
+            "authresponsebodies": {
+                "type": "object",
+                "properties": {
+                    "X-Idaas-Rest-Provider-Type": {
+                        "type": "string"
+                    },
+                    "X-Idaas-Rest-Token-Type": {
+                        "type": "string"
+                    },
+                    "X-Idaas-Rest-Token-Value": {
+                        "type": "string"
+                    },
+                    "X-Idaas-Rest-User-Principal": {
+                        "type": "string",
+                        "example": "sanlam@test.com"
                     }
                 }
             },
-            "TechnicalError": {
-                "description": "A technical error has occurred.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "code": {
-                                    "type": "integer",
-                                    "example": -1
-                                },
-                                "message": {
-                                    "type": "string",
-                                    "example": "A technical error has occurred"
-                                }
-                            }
-                        }
+            "requestHeaders": {
+                "type": "http",
+                "required": [
+                    "Content-Type",
+                    "User-Agent",
+                    "Authorization"
+                ],
+                "properties": {
+                    "Content-Type": {
+                        "type": "string"
+                    },
+                    "User-Agent": {
+                        "type": "string"
+                    },
+                    "Authorization": {
+                        "type": "string",
+                        "example": "OAM-Auth {{access_token}}"
+                    }
+                }
+            },
+            "ErrorModel": {
+                "type": "object",
+                "required": [
+                    "message",
+                    "code"
+                ],
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "minimum": 100,
+                        "maximum": 600
                     }
                 }
             }
@@ -91,68 +137,57 @@
     "paths": {
         "/oic_rest/rest/mobileoamauthentication/register": {
             "post": {
-                "summary": "Register mobile authentication and get a client registration handle",
-                "operationId": "registerMobileAuthentication",
-                "description": "This endpoint registers the mobile authentication and returns a `CLIENTREGHANDLE`.",
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "X-IDAAS-SERVICEDOMAIN",
-                        "schema": {
-                            "type": "string",
-                            "example": "MobileServiceDomain"
-                        }
-                    }
+                "tags": [
+                    "API Client Registration"
                 ],
+                "summary": "RegisterClient",
                 "requestBody": {
-                    "description": "Request body to register mobile authentication.",
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "X-Idaas-Rest-Subject-Type": {
-                                        "type": "string",
-                                        "example": "USERCREDENTIAL"
+                                "$ref": "#/components/schemas/authrequestbodies",
+                                "examples": {
+                                    "X-Idaas-Rest-Subject-Type": "USERCREDENTIAL",
+                                    "X-Idaas-Rest-Subject-Username": "sanlam@test.com",
+                                    "X-Idaas-Rest-Subject-Password": "Telkom10",
+                                    "X-Idaas-Rest-New-Token-Type-To-Create": "CLIENTREGHANDLE",
+                                    "deviceProfile": {
+                                        "oracle:idm:claims:client:sdkversion": null,
+                                        "oracle:idm:claims:client:ostype": null,
+                                        "oracle:idm:claims:client:osversion": null,
+                                        "hardwareIds": {}
                                     },
-                                    "X-Idaas-Rest-Subject-Username": {
-                                        "type": "string",
-                                        "example": "lombarj2@telkom.co.za"
-                                    },
-                                    "X-Idaas-Rest-Subject-Password": {
-                                        "type": "string",
-                                        "example": "11111111"
-                                    },
-                                    "X-Idaas-Rest-New-Token-Type-To-Create": {
-                                        "type": "string",
-                                        "example": "CLIENTREGHANDLE"
-                                    },
-                                    "clientId": {
-                                        "type": "string",
-                                        "example": "Telkom"
-                                    }
+                                    "clientId": "Telkom"
                                 }
                             }
                         }
                     }
                 },
+                "security": [
+                    {
+                        "login": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "X-IDAAS-SERVICEDOMAIN",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "MobileServiceDomain"
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Successful response with the registration handle token.",
+                        "description": "Successful response",
                         "content": {
                             "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "X-Idaas-Rest-Token-Type": {
-                                            "type": "string",
-                                            "example": "CLIENTREGHANDLE"
-                                        },
-                                        "X-Idaas-Rest-Token-Value": {
-                                            "type": "string",
-                                            "example": "eyJvcmFjbGU6aWRtOmNsYWltczpjbGllbnQ6c2RrdmVyc2lvbiI6IjExLjEuMi4wLjAiLCJ0b2tlblR5cGUiOiJDTElFTlRSRUdIQU5ETEUiLCJyZWdVc2VyIjoibG9tYmFyajJAdGVsa29tLmNvLnphIiwiaXNzIjoiTW9iaWxlT0FNQXV0aGVudGljYXRpb24iLCJvcmFjbGU6aWRtOmNsYWltczpjbGllbnQ6b3N0eXBlIjoiaU9TIDExLjQiLCJyZWdUUyI6MTczODY3NTI0OCwianRpIjoiOTk5N2NjMzktMzQ0My00MzQzLThkYjMtNGFlMTBmOTYyZGMzIiwib3JhY2xlOmlkbTpjbGFpbXM6Y2xpZW50Om9zdmVyc2lvbiI6IjExLjQiLCJjbGllbnRJZCI6IlRlbGtvbSJ9.25RC1IK8sbx+8pOWk7v+uBder0t441KqQ35ch7XU8NE="
-                                        }
-                                    }
+                                "schema": null,
+                                "type": "object",
+                                "example": {
+                                    "X-Idaas-Rest-Token-Type": "CLIENTREGHANDLE",
+                                    "X-Idaas-Rest-Token-Value": "eyJvcmFjbGU6aWRtOmNsYWltczpjbGllbnQ6c2RrdmVyc2lvbiI6IiIsInRva2VuVHlwZSI6IkNMSUVOVFJFR0hBTkRMRSIsInJlZ1VzZXIiOiJzYW5sYW1AdGVzdC5jb20iLCJpc3MiOiJNb2JpbGVPQU1BdXRoZW50aWNhdGlvbiIsIm9yYWNsZTppZG06Y2xhaW1zOmNsaWVudDpvc3R5cGUiOiIiLCJyZWdUUyI6MTc0NDAxNzg3MCwianRpIjoiNjdmMzkxNjItZWFlMy00MjY2LWE1MDMtMTg1NGUwZGQ1ZGQyIiwib3JhY2xlOmlkbTpjbGFpbXM6Y2xpZW50Om9zdmVyc2lvbiI6IiIsImNsaWVudElkIjoiVGVsa29tIn0=.rT/bJHyk33ayMhIVz5g3217rAXUAKIm7KWRgiJ63wB4="
                                 }
                             }
                         }
@@ -162,82 +197,76 @@
         },
         "/oic_rest/rest/mobileoamauthentication/authenticate": {
             "post": {
-                "summary": "Authenticate a user",
-                "description": "Authenticates a user and returns a user token.",
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "X-IDAAS-SERVICEDOMAIN",
-                        "schema": {
-                            "type": "string",
-                            "example": "MobileServiceDomain"
-                        }
-                    },
-                    {
-                        "in": "header",
-                        "name": "X-Idaas-Rest-Authorization",
-                        "schema": {
-                            "type": "string",
-                            "example": "UIDPASSWORD cred=\"base64(Idaas-Rest-Token-Value)"
-                        }
-                    }
+                "tags": [
+                    "Authentication"
                 ],
+                "summary": "GetUserToken",
+                "description": "This endpoint allows the user to authenticate and obtain a user token",
                 "requestBody": {
-                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "X-Idaas-Rest-Subject-Type": {
-                                        "type": "string",
-                                        "example": "USERCREDENTIAL"
+                                "$ref": "#/components/schemas/authrequestbodies",
+                                "example": {
+                                    "X-Idaas-Rest-Subject-Type": "USERCREDENTIAL",
+                                    "X-Idaas-Rest-Subject-Username": "sanlam@test.com",
+                                    "X-Idaas-Rest-Subject-Password": "Telkom10",
+                                    "X-Idaas-Rest-New-Token-Type-To-Create": "USERTOKEN",
+                                    "deviceProfile": {
+                                        "oracle:idm:claims:client:sdkversion": "11.1.2.0.0",
+                                        "oracle:idm:claims:client:ostype": "iOS 11.4",
+                                        "oracle:idm:claims:client:osversion": 11.4,
+                                        "hardwareIds": {}
                                     },
-                                    "X-Idaas-Rest-Subject-Username": {
-                                        "type": "string",
-                                        "example": "lombarj2@telkom.co.za"
-                                    },
-                                    "X-Idaas-Rest-Subject-Password": {
-                                        "type": "string",
-                                        "example": "11111111"
-                                    },
-                                    "X-Idaas-Rest-New-Token-Type-To-Create": {
-                                        "type": "string",
-                                        "example": "CLIENTREGHANDLE"
-                                    },
-                                    "clientId": {
-                                        "type": "string",
-                                        "example": "Telkom"
-                                    }
+                                    "clientId": "Telkom"
                                 }
                             }
                         }
                     }
                 },
+                "security": [
+                    {
+                        "login": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "X-Idaas-Rest-Authorization",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "UIDPASSWORD cred=\"{{EncodedAuthToken}}\""
+                    },
+                    {
+                        "name": "X-IDAAS-SERVICEDOMAIN",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "MobileServiceDomain"
+                    },
+                    {
+                        "name": "Content-Type",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "application/json"
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Access token generated successfully",
+                        "description": "Successful response",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "properties": {
-                                        "X-Idaas-Rest-Provider-Type": {
-                                            "type": "string",
-                                            "example": "OAM_11G"
-                                        },
-                                        "X-Idaas-Rest-Token-Type": {
-                                            "type": "string",
-                                            "example": "USERTOKEN"
-                                        },
-                                        "X-Idaas-Rest-Token-Value": {
-                                            "type": "string",
-                                            "example": "lzqBdVMtoMjnnRnQWBuFwYhEIFCIEPxdL9c/yM4iFNOrzQCqoQmv1Iv59vcy8/ZDI2GPWqIJfV5Cv0aiJ5JgvcZqROHlQrD1MoCynvFlLd0Gl2jZ4S/BHt4RMMD0SqTeowraCglFQugCMOBUefw7XMyvGpSniomQw1QQtJCTCus98AEahy6A5h/gvRtXea/x1dRbRLujbpNEa3khZdyFvM68AQoPCt+9/G5Y8xu0/nXsqIkRYbHetaL44oQN3U2kPU0878JKVHeuyEdTnxldjfEzyQhpkGkPsHAOCMHYs/ZJ8uuCqOqXaWztwkRytcxQLdYn88OvQCHGhX7ndI1Fq7EnVPmaDC3L5QszpSWWvOkQnlwqvJkd7fBfHYXCUXzjTMZ2wVvRXTSzJRJREfesLYeziKQO+EoYel47obNeQ/bXvKijK+FsoQ7LJI60feozbFCkkzQVx1Web9+0Ho1mssGAZEkVe73JMjO49njjxa+v7zif0YvQaIxPy9+B48ku0fYBam13bzXIBKQD77jt3A=="
-                                        },
-                                        "X-Idaas-Rest-User-Principal": {
-                                            "type": "string",
-                                            "example": "lombarj2@telkom.co.za"
-                                        }
+                                    "example": {
+                                        "X-Idaas-Rest-Provider-Type": "OAM_11G",
+                                        "X-Idaas-Rest-Token-Type": "USERTOKEN",
+                                        "X-Idaas-Rest-Token-Value": "ffmS4OJVoTBknsVfsy8nzTZ%2BbLU9ugagu81rGeK19EHYySV5yqKsaQH3duej8INYe8bQBuynVRAc1QRx79U%2FRga22hZGceh1VeD%2BkZ6JHMgUAWrmjO6fSIQ1UycjpEWvy2kGhc75QYE%2FD9ukiV3t0EE97%2B2GSPZsPxov2BdJ7wwWFhnh93AVJuct3cCAdn89K1tp6NF5GsqwxIhohm6L0wOF92L6FKAWA3ska42TWSYOS%2BHQymOCf9OtvPgleIQi79f493UKyGfMH2iTdGGObGTbnAiJQ1XMq14Opk7rNkcFlLfXmaXesTwjYcZwpZt7OOfmxCQPj3tQVZOoZi7JnpSJTJkAIwOOOh5p%2F29oN5L98SS3vjhmGcAyVLKKpf2vO%2F%2B%2FI4OC2fXlcOjDEFqJY9ikm0A%2BCQ9K6%2FDRAta8dXiCpnx3k9H4%2B5q4NSMLTqAKli%2BoiHixuXPGjcDHepF10fr4nhFJoCWhCHVCqSNMnv1S1Jnd28C9xRvxFTKZH5jt",
+                                        "X-Idaas-Rest-User-Principal": "sanlam@test.com"
                                     }
                                 }
                             }
@@ -246,421 +275,886 @@
                 }
             }
         },
-        "/oic_rest/rest/mobileoamauthentication/acesss": {
+        "/oic_rest/rest/mobileoamauthentication/access": {
             "post": {
-                "summary": "Generate an access token for the protected resource",
-                "operationId": "generateAccessToken",
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "X-IDAAS-SERVICEDOMAIN",
-                        "schema": {
-                            "type": "string",
-                            "example": "MobileServiceDomain"
-                        }
-                    },
-                    {
-                        "in": "header",
-                        "name": "X-Idaas-Rest-Authorization",
-                        "schema": {
-                            "type": "string",
-                            "example": "UIDPASSWORD cred=\"base64(Idaas-Rest-Token-Value)\""
-                        }
-                    }
+                "tags": [
+                    "Authentication"
                 ],
+                "summary": "GetAccessToken",
                 "requestBody": {
-                    "description": "Request body to generate the access token",
-                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "X-Idaas-Rest-Subject-Type": {
-                                        "type": "string",
-                                        "example": "TOKEN"
-                                    },
-                                    "X-Idaas-Rest-Subject-Value": {
-                                        "type": "string",
-                                        "example": "lzqBdVMtoMjnnRnQWBuFwYhEIFCIEPxdL9c/yM4iFNOrzQCqoQmv1Iv59vcy8/ZDI2GPWqIJfV5Cv0aiJ5JgvcZqROHlQrD1MoCynvFlLd0Gl2jZ4S/BHt4RMMD0SqTeowraCglFQugCMOBUefw7XMyvGpSniomQw1QQtJCTCus98AEahy6A5h/gvRtXea/x1dRbRLujbpNEa3khZdyFvM68AQoPCt+9/G5Y8xu0/nXsqIkRYbHetaL44oQN3U2kPU0878JKVHeuyEdTnxldjfEzyQhpkGkPsHAOCMHYs/ZJ8uuCqOqXaWztwkRytcxQLdYn88OvQCHGhX7ndI1Fq7EnVPmaDC3L5QszpSWWvOkQnlwqvJkd7fBfHYXCUXzjTMZ2wVvRXTSzJRJREfesLYeziKQO+EoYel47obNeQ/bXvKijK+FsoQ7LJI60feozbFCkkzQVx1Web9+0Ho1mssGAZEkVe73JMjO49njjxa+v7zif0YvQaIxPy9+B48ku0fYBam13bzXIBKQD77jt3A=="
-                                    },
-                                    "X-Idaas-Rest-Application-Context": {
-                                        "type": "string",
-                                        "example": "encquery%3DxzTXUa3DXZLM97tAuwKEtLMHEcg5L6xgr%2Bsdw1nEglCDPSXrk%2F4V4ANZSG8kzJGNNbsbqdGVIh5%2BVwRDqJ0J2n3nwk%2BjZrHZMNs1E74OPkmY7A7nr4RW2MiqFfS56jD7BLrxtdrNBcVDdT0QUuykB%2FvZmAsW3YQs2nTIB0ZHintlP%2BDg5huEzMqg54F5jiXkrCvgJuHInH7IhJyq2IgFILd76nWNHQg0j1AN%2FwSogLPqQjradvbZwMUChq3KNyV%2B1Da6iMyoE5Y3wwfvm2kszJ3UPZoGrJV%2F4jb6vfwp9gW%2BLsatuhWRbmXi4YmmiEn835OG5wTW6OescBfLCV4DYw%3D%3D%20agentid%3DECDEV05_7780%20ver%3D1%20crmethod%3D2"
-                                    },
-                                    "X-Idaas-Rest-Application-Resource": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        },
-                                        "example": [
-                                            "/onnet/protected/api/getFreeResource"
-                                        ]
-                                    },
-                                    "X-Idaas-Rest-New-Token-Type-To-Create": {
-                                        "type": "string",
-                                        "example": "ACCESSTOKEN"
-                                    }
+                                "$ref": "#/components/schemas/authrequestbodies",
+                                "example": {
+                                    "X-Idaas-Rest-Subject-Type": "TOKEN",
+                                    "X-Idaas-Rest-Subject-Value": "{{user_token}}",
+                                    "X-Idaas-Rest-Application-Context": "encquery%3D5GyxkBxNl6gLglRh6U7L2AhB%2BpCPoy5eeQOJwugNlV7gjix6IhVzNRZJl3Hoy2U9AmhflrN5h2uwEXBU4TT8AWGnsl0J6F14a6tRnLfsj1BwsgcakoalZoAP5jKKS%2F2%2BxXPDxnjeea4IJxSfgix16ppMFwH3%2BJvbM9M1EyyPPdkAvtHcE7fcoLxMrbYZxlfWIZFKNSdwvoCJcqzF0bN8OJEnbAXIsQi4jjKiVSN3UwyLImx643GzYPxwx%2BCljkWL6VTY8FwH%2Be1A5HZyONB3nURjCV9Nnk7jxIdq4h2Od1Mh1VDGtC4YY3J4N7Vk72%2BtNSDzwm6If2C06eKIiq0HXpmKdaK3JrKm2y5F0OjLwjHcaA%2BTK1YK4G0jeYUsk6zvbJgiN5vjkq74JIE7FmHMwFti%2BNs0Q%2F47Rp76mm6RR%2FU%3D%20agentid%3Decdev02_7780%20ver%3D1%20crmethod%3D2",
+                                    "X-Idaas-Rest-Application-Resource": "https://ecdev02selfservice.telkom.co.za/onnet/protected/api/getFreeResources",
+                                    "X-Idaas-Rest-New-Token-Type-To-Create": "ACCESSTOKEN"
                                 }
                             }
                         }
                     }
                 },
+                "security": [
+                    {
+                        "login": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "X-IDAAS-SERVICEDOMAIN",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "MobileServiceDomain"
+                    },
+                    {
+                        "name": "Content-Type",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "application/json"
+                    },
+                    {
+                        "name": "X-Idaas-Rest-Authorization",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "UIDPASSWORD cred=\"{{EncodedAuthToken}}\""
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Access token generated successfully",
+                        "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "X-Idaas-Rest-Provider-Type": {
-                                            "type": "string",
-                                            "example": "OAM_11G"
-                                        },
-                                        "X-Idaas-Rest-Token-Type": {
-                                            "type": "string",
-                                            "example": "ACCESSTOKEN"
-                                        },
-                                        "X-Idaas-Rest-Token-Value": {
-                                            "type": "string",
-                                            "example": "lHZ%2B8yWF4rUYS7GbUnGgU%2FQ64KcxljZGTZ%2Bh1JF8d%2BkafS6FgjZkMLanMxS2fbmvM6QuvpAM88ewImqoX4bZP%2B34%2BRkLtqOjfo5wruQ0Hgs3c%2FCg8CAIpkolJvXtV08hJHxhgRlxdlosSD9qkcAXd%2BnEhIVLW6Jew5JqLpxhEvXctmeJHfqk65Ma61boZiZ1H7ftdfxCMxCrK5pjAxrbfwpyzH4rq9S9VfwhDcLmirumkBGpic7BKAebO6hn%2B0lu4i4FO0atp8aqdWx%2BEHqDbXZ6Axk8vRLT203aJsDTjdqWyws25Pn207gR1JCSg2E8EQL%2FqLgRwtebpzAMveLqw5vqde%2BB7Ha8%2Fp5z6se0TcMozvx7Snh7%2BKGpmAJX428zNl514LD%2FTIggZf4PnC9VjYc%2FyHT6toodMyPIN8BwOPwcs5sxkEBntsXtAY6KvmDuAgkMliHb%2F43zHnBg0xr7SLTl8OrP9udmLpLkm3V%2B%2BQYBY4Yzr57Wuv0SiU0fUclgHkPHlsWIl%2Be2XkclM5ylKQ%3D%3D"
-                                        },
-                                        "X-Idaas-Rest-User-Principal": {
-                                            "type": "string",
-                                            "example": "lombarj2@telkom.co.za"
-                                        }
-                                    }
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "X-Idaas-Rest-Provider-Type": "OAM_11G",
+                                    "X-Idaas-Rest-Token-Type": "ACCESSTOKEN",
+                                    "X-Idaas-Rest-Token-Value": "ffmS4OJVoTBknsVfsy8nzTZ%2BbLU9ugagu81rGeK19EHYySV5yqKsaQH3duej8INYe8bQBuynVRAc1QRx79U%2FRga22hZGceh1VeD%2BkZ6JHMgUAWrmjO6fSIQ1UycjpEWvy2kGhc75QYE%2FD9ukiV3t0EE97%2B2GSPZsPxov2BdJ7wwWFhnh93AVJuct3cCAdn89K1tp6NF5GsqwxIhohm6L0wOF92L6FKAWA3ska42TWSYOS%2BHQymOCf9OtvPgleIQi79f493UKyGfMH2iTdGGObGTbnAiJQ1XMq14Opk7rNkcFlLfXmaXesTwjYcZwpZt7OOfmxCQPj3tQVZOoZi7JnpSJTJkAIwOOOh5p%2F29oN5L98SS3vjhmGcAyVLKKpf2vO%2F%2B%2FI4OC2fXlcOjDEFqJY9ikm0A%2BCQ9K6%2FDRAta8dXiCpnx3k9H4%2B5q4NSMLTqAKli%2BoiHixuXPGjcDHepF10fr4nhFJoCWhCHVCqSNMnv1S1Jnd28C9xRvxFTKZH5jt",
+                                    "X-Idaas-Rest-User-Principal": "sanlam@test.com"
                                 }
                             }
                         }
                     },
-                    "400": {
-                        "$ref": "#/components/responses/BusinessError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/TechnicalError"
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "message": "Failed in Access Token creation :: Token \"null\" ",
+                                    "oicErrorCode": "IDAAS-21021"
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
         "/eportal/eCustomer/api/getCustomerAssociatedServices": {
             "get": {
-                "summary": "Get Customer Associated Services",
-                "description": "Retrieve the list of services linked to a customer.",
+                "tags": [
+                    "API"
+                ],
+                "summary": "CustomerAssociatedServices",
                 "parameters": [
                     {
-                        "name": "accountNumber",
-                        "in": "query",
+                        "in": "header",
+                        "name": "Content-Type",
                         "required": true,
                         "schema": {
                             "type": "string"
-                        }
+                        },
+                        "example": "application/json"
                     },
                     {
-                        "name": "format",
-                        "in": "query",
-                        "required": false,
+                        "in": "header",
+                        "name": "User-Agent",
+                        "required": true,
                         "schema": {
-                            "type": "string",
-                            "default": "json"
-                        }
+                            "type": "string"
+                        },
+                        "example": "OIC-Agent"
                     },
                     {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OAM-Auth {{access_token}}"
+                    },
+                    {
+                        "in": "query",
+                        "name": "accountNumber",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 333452881
+                    },
+                    {
+                        "in": "query",
                         "name": "version",
-                        "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer",
-                            "default": 1
-                        }
+                            "type": "integer"
+                        },
+                        "example": 2
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success",
+                        "description": "OK",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
                                 "example": {
                                     "resultCode": 0,
                                     "resultMessageCode": "acc-ser-001",
+                                    "resultMessage": "",
+                                    "friendlyCustomerMessage": "",
                                     "payload": [
                                         {
-                                            "accountNumber": "504525168",
-                                            "customerName": "John Doe",
-                                            "serviceNumber": "0670100549",
-                                            "status": "Active"
+                                            "accountNumber": "500119546",
+                                            "banNumber": "333452881",
+                                            "banPayType": "PostPaid",
+                                            "crmContactId": "21333",
+                                            "crmCustomerId": "500020051",
+                                            "customerName": "ONBILLER ACC",
+                                            "customerSubType": "Business Small",
+                                            "customerType": "Business",
+                                            "documentNumber": "789123",
+                                            "documentType": null,
+                                            "financialAccountId": "500119546",
+                                            "friendlyName": "0670005067",
+                                            "hasBan": true,
+                                            "hidden": false,
+                                            "offer": null,
+                                            "productName": null,
+                                            "serviceNumber": "0670005067",
+                                            "serviceType": null,
+                                            "source": "NGBSS",
+                                            "state": "AS",
+                                            "status": "AC",
+                                            "userId": 75163678280,
+                                            "username": "Sanlam@test.com",
+                                            "productTypeIndicator": "M",
+                                            "productId": 90494372820,
+                                            "securityLevel": -1,
+                                            "securityFriendlyName": "Undefined",
+                                            "planType": "Postpaid",
+                                            "huaweiRatePlan": null,
+                                            "huaweiSubscriberID": null,
+                                            "telkomInternet": false,
+                                            "roleName": "Primary",
+                                            "productEntityRef": "Wireless_Main",
+                                            "friendlyProductEntityRef": null,
+                                            "madChannelProductInd": "N"
+                                        },
+                                        {
+                                            "accountNumber": "500119546",
+                                            "banNumber": "333452881",
+                                            "banPayType": "PostPaid",
+                                            "crmContactId": "21333",
+                                            "crmCustomerId": "500020051",
+                                            "customerName": "ONBILLER ACC",
+                                            "customerSubType": "Business Small",
+                                            "customerType": "Business",
+                                            "documentNumber": "789123",
+                                            "documentType": null,
+                                            "financialAccountId": "500119546",
+                                            "friendlyName": 670100280,
+                                            "hasBan": true,
+                                            "hidden": false,
+                                            "offer": null,
+                                            "productName": null,
+                                            "serviceNumber": 670100280,
+                                            "serviceType": null,
+                                            "source": "NGBSS",
+                                            "state": "AS",
+                                            "status": "AC",
+                                            "userId": 75163678280,
+                                            "username": "Sanlam@test.com",
+                                            "productTypeIndicator": "M",
+                                            "productId": 90494372695,
+                                            "securityLevel": -1,
+                                            "securityFriendlyName": "Undefined",
+                                            "planType": "Hybrid",
+                                            "huaweiRatePlan": null,
+                                            "huaweiSubscriberID": null,
+                                            "telkomInternet": false,
+                                            "roleName": "Primary",
+                                            "productEntityRef": "Wireless_Main",
+                                            "friendlyProductEntityRef": null,
+                                            "madChannelProductInd": "N"
                                         }
                                     ]
                                 }
                             }
                         }
                     },
-                    "400": {
-                        "$ref": "#/components/responses/BusinessError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/TechnicalError"
-                    }
-                }
-            }
-        },
-        "/eportal/eBilling/api/getAccountFinancialSummary": {
-            "post": {
-                "summary": "Get Account Financial Summary",
-                "description": "Retrieve financial summary for a given account.",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "accountNumber": {
-                                        "type": "string"
-                                    },
-                                    "startDate": {
-                                        "type": "string"
-                                    },
-                                    "endDate": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success",
+                    "default": {
+                        "description": "Unexpected error",
                         "content": {
                             "application/json": {
-                                "example": {
-                                    "resultCode": 0,
-                                    "payload": {
-                                        "financialAccount": {
-                                            "accountNumber": "12345",
-                                            "totalOutstandingAmt": 300.01,
-                                            "totalPaymentAmt": 400.02
-                                        }
-                                    }
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
                                 }
                             }
                         }
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BusinessError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/TechnicalError"
-                    }
-                }
-            }
-        },
-        "/eportal/eCustomer/api/getPuk": {
-            "post": {
-                "summary": "Get PUK",
-                "description": "Retrieve PUK number for a given MSISDN.",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "msisdn": {
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "resultCode": 0,
-                                    "payload": {
-                                        "puk": "67317235"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BusinessError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/TechnicalError"
-                    }
-                }
-            }
-        },
-        "/eportal/eBilling/api/getBillingUsageHistoryDetail": {
-            "post": {
-                "summary": "Get Billing Usage History Detail",
-                "description": "Retrieve the history detail of billing usage.",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "accountnumber": {
-                                        "type": "string"
-                                    },
-                                    "serviceid": {
-                                        "type": "string"
-                                    },
-                                    "startdate": {
-                                        "type": "string"
-                                    },
-                                    "enddate": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "resultCode": 0,
-                                    "resultMessageCode": "api-buh-003",
-                                    "payload": {
-                                        "billingUsageHistoryDetail": {
-                                            "accountNumber": "123456",
-                                            "startDate": "2023-01-01",
-                                            "endDate": "2023-03-01",
-                                            "usageHistoryDetails": [
-                                                {
-                                                    "serviceId": "456",
-                                                    "productType": "Data",
-                                                    "usageAmount": "5GB",
-                                                    "cost": 50
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BusinessError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/TechnicalError"
                     }
                 }
             }
         },
         "/eportal/eBilling/api/getBillingUsageHistorySummary": {
             "post": {
-                "summary": "Get Billing Usage History Summary",
-                "description": "Retrieve the summary of billing usage.",
+                "tags": [
+                    "API"
+                ],
+                "summary": "getBillingUsageHistorySummary",
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "application/x-www-form-urlencoded": {
                             "schema": {
                                 "type": "object",
+                                "required": [
+                                    "summaryType",
+                                    "version",
+                                    "billMonth",
+                                    "accountNumber",
+                                    "msisdn"
+                                ],
                                 "properties": {
                                     "summaryType": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "example": 7
+                                    },
+                                    "version": {
+                                        "type": "integer",
+                                        "example": 3
                                     },
                                     "billMonth": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "01/FEB/25",
+                                        "description": "Month of billing in DD/MMM/YY format"
                                     },
                                     "accountNumber": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "333452881"
                                     },
                                     "msisdn": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "670100457"
                                     }
                                 }
                             }
                         }
                     }
                 },
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Content-Type",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "application/json"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OIC-Agent"
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OAM-Auth {{access_token}}"
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Success",
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
                         "content": {
                             "application/json": {
-                                "example": {
-                                    "resultCode": 0,
-                                    "resultMessageCode": "api-bus-003",
-                                    "payload": {
-                                        "billingUsageHistorySummary": {
-                                            "resultRow": [
-                                                {
-                                                    "columnName": [
-                                                        "Data Usage",
-                                                        "Call Duration"
-                                                    ],
-                                                    "columnValue": [
-                                                        "5GB",
-                                                        "120 mins"
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    }
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
                                 }
                             }
                         }
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BusinessError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/TechnicalError"
                     }
                 }
             }
         },
         "/eportal/eCustomer/api/getSubscriberProducts": {
-            "get": {
-                "summary": "Get Subscriber Products",
-                "description": "Retrieve subscriber products for a given MSISDN.",
+            "post": {
+                "tags": [
+                    "API"
+                ],
+                "summary": "GetSubscriberProducts",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "msisdn": {
+                                        "type": "integer",
+                                        "example": "0670005067"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "parameters": [
                     {
-                        "name": "msisdn",
-                        "in": "query",
+                        "in": "header",
+                        "name": "Content-Type",
                         "required": true,
                         "schema": {
                             "type": "string"
+                        },
+                        "example": "application/json"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OIC-Agent"
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OAM-Auth {{access_token}}"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "resultCode": 0,
+                                    "resultMessageCode": "api-gsp-000",
+                                    "resultMessage": "",
+                                    "friendlyCustomerMessage": "",
+                                    "payload": {
+                                        "subercirberId": "2005120028640",
+                                        "msisdn": "0670005067",
+                                        "servicePackages": [
+                                            {
+                                                "productId": "R2287",
+                                                "productName": "10GB LTE",
+                                                "effectDate": "2024-07-15 15:39:24",
+                                                "expireDate": "2037-01-01 00:00:00",
+                                                "createDate": "2024-07-15 15:39:24",
+                                                "status": "Active",
+                                                "serviceList": [
+                                                    {
+                                                        "serviceSeq": "1010",
+                                                        "serviceId": "1010",
+                                                        "serviceName": "TransferProduct"
+                                                    },
+                                                    {
+                                                        "serviceSeq": "703",
+                                                        "serviceId": "703",
+                                                        "serviceName": "By Pass Gx"
+                                                    },
+                                                    {
+                                                        "serviceSeq": "4165",
+                                                        "serviceId": "4165",
+                                                        "serviceName": "CLOSEROAM"
+                                                    },
+                                                    {
+                                                        "serviceSeq": "1053",
+                                                        "serviceId": "1053",
+                                                        "serviceName": "Mobile Service "
+                                                    },
+                                                    {
+                                                        "serviceSeq": "805",
+                                                        "serviceId": "805",
+                                                        "serviceName": "TDD"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "productId": "S1413",
+                                                "productName": "Voicemail",
+                                                "effectDate": "2024-07-15 15:39:24",
+                                                "expireDate": "2037-01-01 00:00:00",
+                                                "createDate": "2024-07-15 15:39:24",
+                                                "status": "Active",
+                                                "serviceList": [
+                                                    {
+                                                        "serviceSeq": "272",
+                                                        "serviceId": "272",
+                                                        "serviceName": "VMS Service"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "productId": "S1327",
+                                                "productName": "Voice Calling",
+                                                "effectDate": "2024-07-15 15:39:24",
+                                                "expireDate": "2037-01-01 00:00:00",
+                                                "createDate": "2024-07-15 15:39:24",
+                                                "status": "Active",
+                                                "serviceList": [
+                                                    {
+                                                        "serviceSeq": "254",
+                                                        "serviceId": "254",
+                                                        "serviceName": "Voice Service"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "productId": "S1406",
+                                                "productName": "Internet APN",
+                                                "effectDate": "2024-07-15 15:39:24",
+                                                "expireDate": "2037-01-01 00:00:00",
+                                                "createDate": "2024-07-15 15:39:24",
+                                                "status": "Active",
+                                                "serviceList": [
+                                                    {
+                                                        "serviceSeq": "212",
+                                                        "serviceId": "212",
+                                                        "serviceName": "Internet Service"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "productId": "S1407",
+                                                "productName": "MMS APN",
+                                                "effectDate": "2024-07-15 15:39:24",
+                                                "expireDate": "2037-01-01 00:00:00",
+                                                "createDate": "2024-07-15 15:39:24",
+                                                "status": "Active",
+                                                "serviceList": [
+                                                    {
+                                                        "serviceSeq": "4020",
+                                                        "serviceId": "4020",
+                                                        "serviceName": "MMS Service"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "productId": "S1411",
+                                                "productName": "CLIP",
+                                                "effectDate": "2024-07-15 15:39:24",
+                                                "expireDate": "2037-01-01 00:00:00",
+                                                "createDate": "2024-07-15 15:39:24",
+                                                "status": "Active",
+                                                "serviceList": [
+                                                    {
+                                                        "serviceSeq": "209",
+                                                        "serviceId": "209",
+                                                        "serviceName": "Calling Line Identification Presentation"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "productId": "S1412",
+                                                "productName": "Temporary CLIR",
+                                                "effectDate": "2024-07-15 15:39:24",
+                                                "expireDate": "2037-01-01 00:00:00",
+                                                "createDate": "2024-07-15 15:39:24",
+                                                "status": "Active",
+                                                "serviceList": [
+                                                    {
+                                                        "serviceSeq": "210",
+                                                        "serviceId": "210",
+                                                        "serviceName": "Temporary Calling Line Identification Restriction"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "productId": "S1899",
+                                                "productName": "Always re-direct",
+                                                "effectDate": "2024-07-15 15:39:24",
+                                                "expireDate": "2037-01-01 00:00:00",
+                                                "createDate": "2024-07-15 15:39:24",
+                                                "status": "Active",
+                                                "serviceList": null
+                                            }
+                                        ],
+                                        "ratePlanServiceList": [
+                                            {
+                                                "serviceSeq": "1010",
+                                                "serviceId": "1010",
+                                                "serviceName": "TransferProduct"
+                                            }
+                                        ],
+                                        "ratePlanProductId": "R2287",
+                                        "ratePlanProductName": "10GB LTE",
+                                        "ratePlanEffectDate": "2024-07-15 15:39:24",
+                                        "ratePlanExpireDate": "2037-01-01 00:00:00",
+                                        "ratePlanCreateDate": "2024-07-15 15:39:24",
+                                        "ratePlanSstatus": "C01"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/eportal/eCustomer/api/getPuk": {
+            "post": {
+                "tags": [
+                    "API"
+                ],
+                "summary": "GetPuk",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "msisdn": {
+                                        "type": "integer",
+                                        "example": "0670005067"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "Telkom10"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Content-Type",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "application/json"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OIC-Agent"
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OAM-Auth {{access_token}}"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "resultCode": 1,
+                                    "resultMessageCode": "api-puk-007",
+                                    "resultMessage": "An error occurred retrieving the PUK. Webservice call GetSimProfile to endsystem Huawei failed due to a business related error. The webservice response is <detail><tsmd:Exception xmlns:tsmd=\"http://eai.telkom.co.za/EaiEsbException/20120502\" xmlns:ns=\"http://eai.telkom.co.za/internal/EnterpriseMessage/20110801\" xmlns:ns1=\"http://eai.telkom.co.za/services/GetSimProfile/20120502/\" xmlns:ns11=\"http://eai.telkom.co.za/EnterpriseServiceMetaData/20110801\" xmlns:ns2=\"http://com.tibco.amsb/mediation/1335953532820\" xmlns:tns=\"http://schemas.tibco.com/amsb/rt/exceptions\" xmlns:tns1=\"http://www.w3.org/2005/08/addressing\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><tsmd:Result><tsmd:ResultCode>-2</tsmd:ResultCode><tsmd:ResultMsgCode>EAI-500004</tsmd:ResultMsgCode><tsmd:ResultMsg>&lt;tibco:myFaultDetail xmlns:tibco=\"http://tibcouri/\"&gt;java.lang.IllegalStateException: Scheme 'https' not registered.\n\tat org.apache.http.conn.scheme.SchemeRegistry.getScheme(SchemeRegistry.java:73)\n\tat org.apache.http.impl.conn.DefaultHttpRoutePlanner.determineRoute(DefaultHttpRoutePlanner.java:111)\n\tat org.apache.http.impl.client.DefaultRequestDirector.determineRoute(DefaultRequestDirector.java:655)\n\tat org.apache.http.impl.client.DefaultRequestDirector.execute(DefaultRequestDirector.java:353)\n\tat org.apache.http.impl.client.AbstractHttpClient.execute(AbstractHttpClient.java:641)\n\tat com.tibco.amf.sharedresource.runtime.core.http.httpclient.HttpClientWrapperImpl.execute(HttpClientWrapperImpl.java:72)\n\tat com.tibco.amf.binding.soap.runtime.transport.http.SoapHttpClient.sendSyncRequestReply(SoapHttpClient.java:279)\n\tat com.tibco.amf.binding.soap.runtime.transport.http.SoapHttpOutboundEndpoint.invoke(SoapHttpOutboundEndpoint.java:425)\n\tat com.tibco.amf.binding.soap.runtime.transport.http.SoapHttpOutboundEndpoint.invoke(SoapHttpOutboundEndpoint.java:1)\n\tat sun.reflect.GeneratedMethodAccessor79.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n\tat java.lang.reflect.Method.invoke(Method.java:597)\n\tat com.tibco.amf.platform.runtime.componentframework.internal.proxies.operation.OperationHandler.invokeMethodWithThreadContext(OperationHandler.java:667)\n\tat com.tibco.amf.platform.runtime.componentframework.internal.proxies.operation.AsyncToAsyncOperationHandler.invoke(AsyncToAsyncOperationHandler.java:137)\n\tat com.tibco.amf.platform.runtime.componentframework.internal.proxies.ProxyInvocationHandlerRegistry$ProxyInvocationContext.invoke(ProxyInvocationHandlerRegistry.java:443)\n\tat com.sun.proxy.$Proxy47.invoke(Unknown Source)\n\tat com.tibco.amsb.core.engine.databinding.MediationListenerContextElement.invokeReference(MediationListenerContextElement.java:133)\n\tat com.tibco.amsb.core.engine.databinding.MediationListenerContextElement.invokeReferenceForTargetOperationMediationTask(MediationListenerContextElement.java:76)\n\tat com.tibco.mediation.task.rt.internal.impl.TargetOperationCaller.sendRequestForTargetOperationMediationTask(TargetOperationCaller.java:272)\n\tat com.tibco.mediation.task.rt.internal.impl.TargetOperationMediationTaskRT.execute(TargetOperationMediationTaskRT.java:116)\n\tat com.tibco.amsb.core.engine.flow.manager.MediationTaskEnfold.executeMediationTask(MediationTaskEnfold.java:161)\n\tat com.tibco.amsb.core.engine.processor.MediationPath.execute(MediationPath.java:140)\n\tat com.tibco.amsb.core.engine.processor.MediationPathProcessor.executeInputPaths(MediationPathProcessor.java:329)\n\tat com.tibco.amsb.core.engine.processor.MediationPathProcessor.processInputPath(MediationPathProcessor.java:549)\n\tat com.tibco.amsb.core.engine.processor.MediationPathProcessor.processRequest(MediationPathProcessor.java:520)\n\tat com.tibco.amsb.core.engine.databinding.MediationListenerType.invoke(MediationListenerType.java:148)\n\tat sun.reflect.GeneratedMethodAccessor79.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n\tat java.lang.reflect.Method.invoke(Method.java:597)\n\tat com.tibco.amf.platform.runtime.componentframework.internal.proxies.operation.OperationHandler.invokeMethodWithThreadContext(OperationHandler.java:667)\n\tat com.tibco.amf.platform.runtime.componentframework.internal.proxies.operation.AsyncToAsyncOperationHandler.invoke(AsyncToAsyncOperationHandler.java:137)\n\tat com.tibco.amf.platform.runtime.componentframework.internal.proxies.ProxyInvocationHandlerRegistry$ProxyInvocationContext.invoke(ProxyInvocationHandlerRegistry.java:443)\n\tat com.sun.proxy.$Proxy46.invoke(Unknown Source)\n\tat com.tibco.amf.binding.soap.runtime.transport.http.SoapHttpInboundEndpoint.processHttpPost(SoapHttpInboundEndpoint.java:565)\n\tat com.tibco.amf.binding.soap.runtime.transport.http.SoapHttpServer.doPost(SoapHttpServer.java:195)\n\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:710)\n\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:803)\n\tat org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:502)\n\tat org.mortbay.jetty.servlet.ServletHandler$Chain.doFilter(ServletHandler.java:1213)\n\tat com.tibco.governance.pa.amxcomponent.pep.http.HttpPepFilter.doFilter(HttpPepFilter.java:126)\n\tat org.mortbay.jetty.servlet.ServletHandler$Chain.doFilter(ServletHandler.java:1205)\n\tat com.tibco.amf.implementation.common.httpfilter.GenericComponentFilter.doFilter(GenericComponentFilter.java:65)\n\tat org.mortbay.jetty.servlet.ServletHandler$Chain.doFilter(ServletHandler.java:1205)\n\tat com.tibco.amf.hpa.tibcohost.jetty.internal.ConnectorFilter.doFilter(ConnectorFilter.java:49)\n\tat org.mortbay.jetty.servlet.ServletHandler$Chain.doFilter(ServletHandler.java:1205)\n\tat org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:388)\n\tat org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)\n\tat org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:182)\n\tat org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:765)\n\tat org.mortbay.jetty.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:230)\n\tat org.mortbay.jetty.handler.HandlerCollection.handle(HandlerCollection.java:114)\n\tat org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)\n\tat org.mortbay.jetty.Server.handle(Server.java:326)\n\tat org.mortbay.jetty.HttpConnection.handleRequest(HttpConnection.java:536)\n\tat org.mortbay.jetty.HttpConnection$RequestHandler.content(HttpConnection.java:928)\n\tat org.mortbay.jetty.HttpParser.parseNext(HttpParser.java:747)\n\tat org.mortbay.jetty.HttpParser.parseAvailable(HttpParser.java:218)\n\tat org.mortbay.jetty.HttpConnection.handle(HttpConnection.java:405)\n\tat org.mortbay.jetty.bio.SocketConnector$Connection.run(SocketConnector.java:228)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)\n\tat java.lang.Thread.run(Thread.java:682)&lt;/tibco:myFaultDetail&gt;</tsmd:ResultMsg></tsmd:Result><tsmd:Headers/></tsmd:Exception></detail>",
+                                    "friendlyCustomerMessage": "An error occurred retrieving the PUK.",
+                                    "payload": {}
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/onnet/protected/api/getFreeResources": {
+            "get": {
+                "tags": [
+                    "API"
+                ],
+                "summary": "GetFreeResources",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Content-Type",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "application/json"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OIC-Agent"
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OAM-Auth {{access_token}}"
+                    },
+                    {
+                        "in": "query",
+                        "name": "msisdn",
+                        "schema": {
+                            "type": "integer",
+                            "example": "0670005067"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success",
+                        "description": "OK",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
                                 "example": {
                                     "resultCode": 0,
-                                    "resultMessageCode": "api-gsp-000",
+                                    "resultMessageCode": "api-gfr-010",
+                                    "resultMessage": "Free resources sucessfully retrieved.",
+                                    "friendlyCustomerMessage": "",
+                                    "payload": [
+                                        {
+                                            "subscriberFreeResource": {
+                                                "type": "5043",
+                                                "typeName": "Included Telkom Mobile Night Surfer Data",
+                                                "service": "GPRS",
+                                                "totalAmount": "128849018880",
+                                                "totalAmountAndMeasure": "122880 MB",
+                                                "usedAmount": "0",
+                                                "usedAmountAndMeasure": "0 MB",
+                                                "measure": "Bytes",
+                                                "startBillCycle": "Thu May 01 2025",
+                                                "endBillCycle": "00:00:00 Thu May 01 2025",
+                                                "isTimeBased": false
+                                            },
+                                            "info": "GPRS: 128849018880 Bytes remaining 0 Bytes used  Expires on Thu May 01 2025",
+                                            "service": "GPRS"
+                                        },
+                                        {
+                                            "subscriberFreeResource": {
+                                                "type": "5118",
+                                                "typeName": "Inclusive SmartBroadband Data",
+                                                "service": "GPRS",
+                                                "totalAmount": "128849018880",
+                                                "totalAmountAndMeasure": "122880 MB",
+                                                "usedAmount": "0",
+                                                "usedAmountAndMeasure": "0 MB",
+                                                "measure": "Bytes",
+                                                "startBillCycle": "Sun Jun 01 2025",
+                                                "endBillCycle": "00:00:00 Sun Jun 01 2025",
+                                                "isTimeBased": false
+                                            },
+                                            "info": "GPRS: 128849018880 Bytes remaining 0 Bytes used  Expires on Sun Jun 01 2025",
+                                            "service": "GPRS"
+                                        },
+                                        {
+                                            "subscriberFreeResource": {
+                                                "type": "5118",
+                                                "typeName": "Inclusive SmartBroadband Data",
+                                                "service": "GPRS",
+                                                "totalAmount": "128849018880",
+                                                "totalAmountAndMeasure": "122880 MB",
+                                                "usedAmount": "0",
+                                                "usedAmountAndMeasure": "0 MB",
+                                                "measure": "Bytes",
+                                                "startBillCycle": "Thu May 01 2025",
+                                                "endBillCycle": "00:00:00 Thu May 01 2025",
+                                                "isTimeBased": false
+                                            },
+                                            "info": "GPRS: 128849018880 Bytes remaining 0 Bytes used  Expires on Thu May 01 2025",
+                                            "service": "GPRS"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/eportal/eCustomer/api/getProduct": {
+            "get": {
+                "tags": [
+                    "API"
+                ],
+                "summary": "GetProduct",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Content-Type",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "application/json"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OIC-Agent"
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OAM-Auth {{access_token}}"
+                    },
+                    {
+                        "in": "query",
+                        "name": "serviceId",
+                        "schema": {
+                            "type": "integer",
+                            "example": "0670005067"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "resultCode": 0,
+                                    "resultMessageCode": "acc-gpd-001",
+                                    "resultMessage": "",
+                                    "friendlyCustomerMessage": "",
                                     "payload": {
-                                        "subercirberId": "2000080035671",
-                                        "msisdn": "0812674546",
-                                        "servicePackages": [
+                                        "id": 90494402613,
+                                        "assignedProductID": null,
+                                        "catalogueID": null,
+                                        "catalogueCode": null,
+                                        "catalogueName": null,
+                                        "productVersionID": null,
+                                        "serviceID": "0670005067",
+                                        "serviceType": "G",
+                                        "entityType": null,
+                                        "subEntityType": null,
+                                        "offer": "10GB LTE Deal",
+                                        "endDate": null,
+                                        "state": "AS",
+                                        "status": "AC",
+                                        "sourceSystem": "NGBSS",
+                                        "domainIndicator": "M",
+                                        "flexibleAttributes": [
                                             {
-                                                "productId": "S1407",
-                                                "productName": "MMS APN",
-                                                "status": "Active"
+                                                "id": 90494402616,
+                                                "name": "RLC_Commitment period Start date",
+                                                "Value": "15/07/2024 15:39:45+DT",
+                                                "fkProductId": 90494402613
+                                            },
+                                            {
+                                                "id": 90494402615,
+                                                "name": "RLC_Commitment period End date",
+                                                "Value": "14/07/2026 15:39:45+DT",
+                                                "fkProductId": 90494402613
+                                            },
+                                            {
+                                                "id": 90494402614,
+                                                "name": "RLC_Commitment period",
+                                                "Value": "24",
+                                                "fkProductId": 90494402613
+                                            },
+                                            {
+                                                "id": 90494402617,
+                                                "name": "Roaming_options",
+                                                "Value": "No_roaming",
+                                                "fkProductId": 90494402613
                                             }
                                         ]
                                     }
@@ -668,215 +1162,812 @@
                             }
                         }
                     },
-                    "400": {
-                        "$ref": "#/components/responses/BusinessError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/TechnicalError"
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
-        "/onnet/protected/api/getFreeResources": {
-            "get": {
-                "summary": "Get Free Products",
-                "description": "Returns the customers free resources. i.e. free minutes, SMSs, mobile data bundles, Wi-Fi data bundles",
+        "/eportal/eBilling/api/getBillingUsageHistoryDetail": {
+            "post": {
+                "tags": [
+                    "API"
+                ],
+                "summary": "GetBillingUsageHistoryDetail",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "accountnumber": {
+                                        "type": "integer",
+                                        "example": "333452881"
+                                    },
+                                    "serviceid": {
+                                        "type": "integer",
+                                        "example": "0670005067"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "parameters": [
                     {
-                        "name": "msisdn",
-                        "in": "query",
+                        "in": "header",
+                        "name": "Content-Type",
                         "required": true,
-                        "description": "MSISDN of either the MSISDN in context or an associated MSISDN",
                         "schema": {
-                            "type": "string",
-                            "example": "0811111111"
-                        }
+                            "type": "string"
+                        },
+                        "example": "application/json"
                     },
                     {
-                        "name": "version",
-                        "in": "query",
+                        "in": "header",
+                        "name": "User-Agent",
                         "required": true,
-                        "description": "API version",
                         "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
+                            "type": "string"
+                        },
+                        "example": "OIC-Agent"
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OAM-Auth {{access_token}}"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Free resources successfully retrieved.",
+                        "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "resultCode": {
-                                            "type": "integer",
-                                            "example": 0
-                                        },
-                                        "resultMessageCode": {
-                                            "type": "string",
-                                            "example": "api-gfr-010"
-                                        },
-                                        "resultMessage": {
-                                            "type": "string",
-                                            "example": "Free resources successfully retrieved."
-                                        },
-                                        "friendlyCustomerMessage": {
-                                            "type": "string",
-                                            "example": ""
-                                        },
-                                        "payload": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "info": {
-                                                        "type": "string",
-                                                        "example": "GPRS: 3221225472 Bytes remaining - Bytes used Expires on Wed Jul 01 2015"
-                                                    },
-                                                    "service": {
-                                                        "type": "string",
-                                                        "example": "GPRS"
-                                                    },
-                                                    "subscriberFreeResource": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "endBillCycle": {
-                                                                "type": "string",
-                                                                "example": "Wed Jul 01 2015"
-                                                            },
-                                                            "expiryDate": {
-                                                                "type": "string",
-                                                                "example": "Tue Jun 30 2015"
-                                                            },
-                                                            "measure": {
-                                                                "type": "string",
-                                                                "example": "Bytes"
-                                                            },
-                                                            "service": {
-                                                                "type": "string",
-                                                                "example": "GPRS"
-                                                            },
-                                                            "startBillCycle": {
-                                                                "type": "string",
-                                                                "example": "Wed Jul 01 2015"
-                                                            },
-                                                            "totalAmount": {
-                                                                "type": "string",
-                                                                "example": "3221225472"
-                                                            },
-                                                            "totalAmountAndMeasure": {
-                                                                "type": "string",
-                                                                "example": "3072 MB"
-                                                            },
-                                                            "type": {
-                                                                "type": "string",
-                                                                "example": "5043"
-                                                            },
-                                                            "typeName": {
-                                                                "type": "string",
-                                                                "example": "Included Telkom Mobile Night Surfer Data"
-                                                            },
-                                                            "usedAmount": {
-                                                                "type": "string",
-                                                                "example": "-"
-                                                            },
-                                                            "usedAmountAndMeasure": {
-                                                                "type": "string",
-                                                                "example": "-"
-                                                            }
-                                                        }
-                                                    }
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "resultCode": 1,
+                                    "resultMessageCode": "api-buh-006",
+                                    "resultMessage": "Could not retrieve billing usages history detail. ",
+                                    "friendlyCustomerMessage": "",
+                                    "payload": {}
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/eportal/eBilling/api/getAccountFinancialSummary": {
+            "post": {
+                "tags": [
+                    "API"
+                ],
+                "summary": "GetAccountFinancialSummary",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "accountNumber": {
+                                        "type": "integer",
+                                        "example": "333452881"
+                                    },
+                                    "startDate": {
+                                        "type": "string",
+                                        "example": "03-09-2024"
+                                    },
+                                    "endDate": {
+                                        "type": "string",
+                                        "example": "03-03-2025"
+                                    },
+                                    "startPeriod": {
+                                        "type": "integer",
+                                        "example": "202409"
+                                    },
+                                    "endPeriod": {
+                                        "type": "integer",
+                                        "example": "202503"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Content-Type",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "application/json"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OIC-Agent"
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OAM-Auth {{access_token}}"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "resultCode": 0,
+                                    "resultMessageCode": "api-afc-000",
+                                    "resultMessage": "",
+                                    "friendlyCustomerMessage": "",
+                                    "payload": {
+                                        "financialAccount": {
+                                            "accountNumber": "5088066486",
+                                            "serviceId": null,
+                                            "startPeriod": null,
+                                            "endPeriod": null,
+                                            "startDate": null,
+                                            "endDate": null,
+                                            "baNumber": "333452881",
+                                            "eftReference": "9546780005001165030",
+                                            "accountSummaries": [
+                                                {
+                                                    "invoiceNumber": "A886517478",
+                                                    "openingBalanceAmt": 37.66,
+                                                    "totalOutstandingAmt": 34.1,
+                                                    "totalPaymentAmt": 37.66,
+                                                    "prevOutstandingBalanceAmt": 37.66,
+                                                    "chargeType": "-",
+                                                    "paymentDate": "00:00:00 Sat Aug 31 2024",
+                                                    "paymentType": "DD",
+                                                    "paymentDueDate": "00:00:00 Mon Sep 30 2024",
+                                                    "disputeNumber": "1",
+                                                    "coinDistcontinued": "0.00",
+                                                    "vatPayment": "4.91",
+                                                    "discountAmount": "0.00",
+                                                    "creditAmount": "0.00",
+                                                    "billMonth": "00:00:00 Sun Sep 01 2024"
+                                                },
+                                                {
+                                                    "invoiceNumber": "A688044761",
+                                                    "openingBalanceAmt": 4238.08,
+                                                    "totalOutstandingAmt": 4368.23,
+                                                    "totalPaymentAmt": 4238.08,
+                                                    "prevOutstandingBalanceAmt": 4238.08,
+                                                    "chargeType": "-",
+                                                    "paymentDate": "00:00:00 Mon Sep 30 2024",
+                                                    "paymentType": "DD",
+                                                    "paymentDueDate": "00:00:00 Thu Oct 31 2024",
+                                                    "disputeNumber": "1",
+                                                    "coinDistcontinued": "0.00",
+                                                    "vatPayment": "552.79",
+                                                    "discountAmount": "0.00",
+                                                    "creditAmount": "0.00",
+                                                    "billMonth": "00:00:00 Tue Oct 01 2024"
+                                                },
+                                                {
+                                                    "invoiceNumber": "A125010703",
+                                                    "openingBalanceAmt": 779.81,
+                                                    "totalOutstandingAmt": 800.51,
+                                                    "totalPaymentAmt": 779.81,
+                                                    "prevOutstandingBalanceAmt": 779.81,
+                                                    "chargeType": "-",
+                                                    "paymentDate": "00:00:00 Thu Oct 31 2024",
+                                                    "paymentType": "DD",
+                                                    "paymentDueDate": "00:00:00 Sat Nov 30 2024",
+                                                    "disputeNumber": "1",
+                                                    "coinDistcontinued": "0.00",
+                                                    "vatPayment": "101.71",
+                                                    "discountAmount": "0.00",
+                                                    "creditAmount": "0.00",
+                                                    "billMonth": "00:00:00 Fri Nov 01 2024"
+                                                },
+                                                {
+                                                    "invoiceNumber": "A153498557",
+                                                    "openingBalanceAmt": 4.17,
+                                                    "totalOutstandingAmt": 4.5,
+                                                    "totalPaymentAmt": 0,
+                                                    "prevOutstandingBalanceAmt": 4.17,
+                                                    "chargeType": "-",
+                                                    "paymentDate": null,
+                                                    "paymentType": "DD",
+                                                    "paymentDueDate": "00:00:00 Tue Dec 31 2024",
+                                                    "disputeNumber": "1",
+                                                    "coinDistcontinued": "0.00",
+                                                    "vatPayment": "0.54",
+                                                    "discountAmount": "0.00",
+                                                    "creditAmount": "0.00",
+                                                    "billMonth": "00:00:00 Sun Dec 01 2024"
+                                                },
+                                                {
+                                                    "invoiceNumber": "A771666272",
+                                                    "openingBalanceAmt": 7025.31,
+                                                    "totalOutstandingAmt": 6325.57,
+                                                    "totalPaymentAmt": 7025.31,
+                                                    "prevOutstandingBalanceAmt": 7025.31,
+                                                    "chargeType": "-",
+                                                    "paymentDate": "00:00:00 Tue Dec 31 2024",
+                                                    "paymentType": "DD",
+                                                    "paymentDueDate": "00:00:00 Fri Jan 31 2025",
+                                                    "disputeNumber": "1",
+                                                    "coinDistcontinued": "0.00",
+                                                    "vatPayment": "916.34",
+                                                    "discountAmount": "0.00",
+                                                    "creditAmount": "0.00",
+                                                    "billMonth": "00:00:00 Wed Jan 01 2025"
+                                                },
+                                                {
+                                                    "invoiceNumber": "A241785254",
+                                                    "openingBalanceAmt": 8.13,
+                                                    "totalOutstandingAmt": 8.25,
+                                                    "totalPaymentAmt": 0,
+                                                    "prevOutstandingBalanceAmt": 8.13,
+                                                    "chargeType": "-",
+                                                    "paymentDate": null,
+                                                    "paymentType": "DD",
+                                                    "paymentDueDate": "00:00:00 Fri Feb 28 2025",
+                                                    "disputeNumber": "1",
+                                                    "coinDistcontinued": "0.00",
+                                                    "vatPayment": "1.06",
+                                                    "discountAmount": "0.00",
+                                                    "creditAmount": "0.00",
+                                                    "billMonth": "00:00:00 Sat Feb 01 2025"
+                                                },
+                                                {
+                                                    "invoiceNumber": "A598289627",
+                                                    "openingBalanceAmt": 681.73,
+                                                    "totalOutstandingAmt": 668.44,
+                                                    "totalPaymentAmt": 681.73,
+                                                    "prevOutstandingBalanceAmt": 681.73,
+                                                    "chargeType": "-",
+                                                    "paymentDate": "00:00:00 Fri Feb 28 2025",
+                                                    "paymentType": "DD",
+                                                    "paymentDueDate": "00:00:00 Mon Mar 31 2025",
+                                                    "disputeNumber": "1",
+                                                    "coinDistcontinued": "0.00",
+                                                    "vatPayment": "88.92",
+                                                    "discountAmount": "0.00",
+                                                    "creditAmount": "0.00",
+                                                    "billMonth": "00:00:00 Sat Mar 01 2025"
                                                 }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/eportal/eCustomer/api/getCustomerBillingAccountInformation": {
+            "post": {
+                "tags": [
+                    "API"
+                ],
+                "summary": "getcustomeBillingAccountInformation",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "banOrBaId": {
+                                        "type": "integer",
+                                        "example": "333452881"
+                                    },
+                                    "source": {
+                                        "type": "string",
+                                        "example": "NGBSS"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Content-Type",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "application/json"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OIC-Agent"
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OAM-Auth {{access_token}}"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "resultCode": 0,
+                                    "resultMessageCode": "api-gca-003",
+                                    "resultMessage": "Success",
+                                    "friendlyCustomerMessage": "",
+                                    "payload": [
+                                        {
+                                            "billingArangementId": "333452881",
+                                            "baDetails": {
+                                                "billingArrangementBillInfo": {
+                                                    "productionFrequency": 0,
+                                                    "productionIndicator": "Y",
+                                                    "itemizedTaxIndicator": "Y",
+                                                    "billFormat": "Email",
+                                                    "billLanguage": "EN",
+                                                    "dueDate": "31",
+                                                    "nameOnBill": "OnBiller Acc",
+                                                    "careOf": null,
+                                                    "tradeName": null,
+                                                    "clientBranchCode": null,
+                                                    "emailAddress": "t@t.co.za",
+                                                    "mmsIndicator": null,
+                                                    "mmsTargetNumber": null,
+                                                    "mmsNumber": "0670100765"
+                                                },
+                                                "documentInformation": {
+                                                    "billFrequency": 1,
+                                                    "billingReferenceDate": null,
+                                                    "productionUpLimit": 1,
+                                                    "billingCycleDay": "0",
+                                                    "cycleBusinesEntity": 0,
+                                                    "cycleCloseDay": 31,
+                                                    "cycleCode": 1,
+                                                    "cycleDescription": "Payment Day 5/15/20/25/31",
+                                                    "cycleFrequency": null,
+                                                    "cycleFrequencyMultiplier": 0,
+                                                    "cyclePopulationCode": null,
+                                                    "cyclePopulationDescription": null,
+                                                    "documentProduceIndicator": "Y",
+                                                    "documentFormat": null,
+                                                    "documentType": "B",
+                                                    "dueDays": 31,
+                                                    "printingCategoryCode": null,
+                                                    "printingCategoryEffectiveDate": null,
+                                                    "printCategoryExpirationDate": null,
+                                                    "tempPrintingCategoryExpirationDate": null,
+                                                    "tempPrintingCategoryEffectiveDate": null,
+                                                    "tempPrintingCategoryCode": null,
+                                                    "zeroBalanceIndicator": "N"
+                                                },
+                                                "invoicingInformation": {
+                                                    "cycleCode": 0,
+                                                    "cycleInstance": 0,
+                                                    "cycleNumber": 0,
+                                                    "cyclePeriodStart": null,
+                                                    "cyclePeriodEnd": null,
+                                                    "cYcleRunDate": null,
+                                                    "cycleSequenceRun": 0,
+                                                    "cycleYear": 0,
+                                                    "periodKey": 0,
+                                                    "cycleStatus": null,
+                                                    "lastCycleStatus": null,
+                                                    "lastDocumentID": 0,
+                                                    "lastProductionDate": null
+                                                },
+                                                "accountNumber": null,
+                                                "bANumber": null,
+                                                "billingArrangementStatus": "T",
+                                                "billingArrangementAlias": "OnBiller Acc",
+                                                "billingArrangementCreationDate": "00:00:00 Fri Jul 12 2024",
+                                                "businessEntityID": 0,
+                                                "customerAccountID": 500119546,
+                                                "openDate": null,
+                                                "statusDate": "00:00:00 Mon Jan 01 1753",
+                                                "postpaidChannel": {
+                                                    "billingArrangementID": 0,
+                                                    "customerAccoundID": 0,
+                                                    "postpaidChannelAlias": null,
+                                                    "paymentInstructionID": 0,
+                                                    "postpaidChannelID": 0,
+                                                    "updateAction": null,
+                                                    "cardId": 0,
+                                                    "bankAccountID": 268598309
+                                                },
+                                                "prepaidAccount": null,
+                                                "reportingOnlyINdicator": "N",
+                                                "barFMCIndicator": 0,
+                                                "addressInformation": {
+                                                    "addressIdentifier": null,
+                                                    "addressType": null,
+                                                    "addressValue": null,
+                                                    "validityEndDate": null,
+                                                    "validityStartDate": null,
+                                                    "physicalAddressIdentifier": null,
+                                                    "physicalAddressType": "Geographic",
+                                                    "physicalAddressFormat": "Standard",
+                                                    "physicalApartment": null,
+                                                    "physicalCity": "SALT RIVER",
+                                                    "physicalCountry": "SOUTH AFRICA",
+                                                    "physicalFloor": null,
+                                                    "physicalLatitude": "-33.936477",
+                                                    "physicalLongitude": "18.446917",
+                                                    "physicalPostalCode": "7925",
+                                                    "physicalRoom": null,
+                                                    "physicalProvince": "WESTERN CAPE",
+                                                    "physicalTimeZone": "GMT+02:00",
+                                                    "physicalStreetName": "EDEN RD",
+                                                    "physicalStreetNumber": "38",
+                                                    "physicalTown": "SALT RIVER",
+                                                    "physicalAddressLine1": "38 EDEN RD",
+                                                    "physicalAddressLine2": null,
+                                                    "physicalAddressLine3": null,
+                                                    "physicalAddressLine4": null,
+                                                    "physicalStartDate": null,
+                                                    "physicalEndDate": null,
+                                                    "physicalSuburb": "WOODSTOCK",
+                                                    "physicalComplex": null,
+                                                    "physicalBuildingName": null,
+                                                    "physicalDirectionalComments": null,
+                                                    "physicalPOBox": null,
+                                                    "physicalPrivateBag": null,
+                                                    "physicalPostnetSuite": null,
+                                                    "physicalNote": null,
+                                                    "physicalVerificationStatus": "Y",
+                                                    "physicalLRProvinceID": 5,
+                                                    "physicalLRCountryID": 1,
+                                                    "physicalLRTownID": 0,
+                                                    "physicalLRSuburbID": 0,
+                                                    "physicalStreetID": 0,
+                                                    "physicalLRAddressMasterID": 46086052,
+                                                    "physicalLRBuildingID": 0,
+                                                    "physicalFloorID": 0,
+                                                    "physicalBuildingNumberID": 0,
+                                                    "physicalPrivateBagID": 0,
+                                                    "physicalPostnetID": 0,
+                                                    "postalAddressIdentifier": null,
+                                                    "postalAddressType": "Geographic",
+                                                    "postalAddressFormat": "Standard",
+                                                    "postalCIty": "SALT RIVER",
+                                                    "postalCountry": "SOUTH AFRICA",
+                                                    "postalAddressCode": "7925",
+                                                    "postalPOBox": null,
+                                                    "postalProvince": "WESTERN CAPE",
+                                                    "postalTimeZone": null,
+                                                    "postalTown": "SALT RIVER",
+                                                    "postalAddressLine1": "38 EDEN RD",
+                                                    "postalAddressLine2": null,
+                                                    "postalAddressLine3": null,
+                                                    "postalAddressLine4": null,
+                                                    "postalStartDate": null,
+                                                    "postalEndDate": null,
+                                                    "postalSuburb": "WOODSTOCK",
+                                                    "postalStreetName": "EDEN RD",
+                                                    "postalStreetNumber": "38",
+                                                    "postalLatitude": "-33.936477",
+                                                    "postalLongitude": "18.446917",
+                                                    "postalComplex": null,
+                                                    "postalBuildingName": null,
+                                                    "postalFloor": null,
+                                                    "postalUnit": null,
+                                                    "postalDirectionalComments": null,
+                                                    "postalPrivateBag": null,
+                                                    "postalPostnetSuite": null,
+                                                    "postalNote": null,
+                                                    "postalVerificationStatus": "Y",
+                                                    "postalLRCountryID": 1,
+                                                    "postalLRProvinceID": 5,
+                                                    "postalLRTownID": 0,
+                                                    "postalLRSuburbID": 0,
+                                                    "postalStreetID": 0,
+                                                    "postalLRAddressMasterID": 46086052,
+                                                    "postalLRBuildingID": 0,
+                                                    "postalFloorID": 0,
+                                                    "postalBuildingNumberID": 0,
+                                                    "postalPrivateBagID": 0,
+                                                    "postalPostnetID": 0
+                                                },
+                                                "firstName": null,
+                                                "lastName": null,
+                                                "salutation": null,
+                                                "accountName": null
+                                            },
+                                            "contactInfo": {
+                                                "addressInformation": null,
+                                                "roleName": null,
+                                                "roleStartDate": null,
+                                                "roleEndDate": null,
+                                                "additionalName": null,
+                                                "formattedName": null,
+                                                "roleNameReferenceIdentifier": null,
+                                                "organizationInformation": {
+                                                    "businessDescription": null,
+                                                    "ceaseDate": "00:00:00 Mon Jan 01 1753",
+                                                    "establishedDate": "14:02:39 Wed Jul 10 2024",
+                                                    "fiscalYearEnd": "00:00:00 Mon Jan 01 1753",
+                                                    "organizationID": "268592252",
+                                                    "isLegalEntity": false,
+                                                    "organizationName": "268592252",
+                                                    "revenueRange": "Please specify:",
+                                                    "sizeEmployees": "Please specify:",
+                                                    "standards": null,
+                                                    "status": "0",
+                                                    "stockSymbol": null,
+                                                    "organizationAccountType": null,
+                                                    "domain": null
+                                                },
+                                                "personInformation": {
+                                                    "birthDate": "13:58:39 Thu Jul 09 1987",
+                                                    "birthPlace": null,
+                                                    "deathDate": "00:00:00 Mon Jan 01 1753",
+                                                    "familyName": "Accept",
+                                                    "formattedName": "C18465X6 Accept",
+                                                    "gender": "M",
+                                                    "givenName": "C18465X6",
+                                                    "identificationNumber": "21333",
+                                                    "isAnonymous": false,
+                                                    "legalName": null,
+                                                    "maritalStatus": "Single",
+                                                    "middleName": null,
+                                                    "nameChangeDate": "00:00:00 Mon Jan 01 1753",
+                                                    "personRank": 0,
+                                                    "preferredGivenName": null,
+                                                    "preferredFamilyName": null,
+                                                    "salutation": null,
+                                                    "highValueClient": null,
+                                                    "vip": null,
+                                                    "preferredLanguage": null,
+                                                    "initials": null
+                                                },
+                                                "contactRoleReference": "BillingArrangement",
+                                                "entityType": "BillingArrangement",
+                                                "entityID": "333452881",
+                                                "personID": "268639390",
+                                                "organizationID": "268592252",
+                                                "customerProfileID": "268629284",
+                                                "customerID": "500020051",
+                                                "customerName": "OnBiller Acc",
+                                                "preferredCurrency": "ZAR",
+                                                "vatRegistrationNumber": null
                                             }
                                         }
-                                    }
+                                    ]
                                 }
                             }
                         }
                     },
-                    "400": {
-                        "description": "Validation error or bad request.",
+                    "default": {
+                        "description": "Unexpected error",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "resultCode": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "resultMessageCode": {
-                                            "type": "string",
-                                            "example": "api-gfr-001"
-                                        },
-                                        "resultMessage": {
-                                            "type": "string",
-                                            "example": "Validation message No msisdn in context"
-                                        },
-                                        "friendlyCustomerMessage": {
-                                            "type": "string",
-                                            "example": "Invalid request. Please provide a valid MSISDN."
-                                        }
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/fulfilment/protected/api/sim/suspend": {
+            "post": {
+                "tags": [
+                    "API"
+                ],
+                "summary": "Suspend",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "msisdn": {
+                                        "type": "integer",
+                                        "example": 670100827
+                                    },
+                                    "sender": {
+                                        "type": "string",
+                                        "example": "Sanlam"
                                     }
                                 }
                             }
                         }
+                    }
+                },
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Content-Type",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "application/json"
                     },
-                    "401": {
-                        "description": "Unauthorized access - User not logged in.",
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OIC-Agent"
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OAM-Auth {{access_token}}"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "resultCode": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "resultMessageCode": {
-                                            "type": "string",
-                                            "example": "api-gfr-006"
-                                        },
-                                        "resultMessage": {
-                                            "type": "string",
-                                            "example": "No logged in user has been detected. User needs to be logged in to access the /protected version."
-                                        },
-                                        "friendlyCustomerMessage": {
-                                            "type": "string",
-                                            "example": "User authentication required."
-                                        }
-                                    }
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "resultCode": 0,
+                                    "resultMessageCode": "api-suspendAndresume-000",
+                                    "resultMessage": "The Suspension Status has been changed successfully.",
+                                    "friendlyCustomerMessage": "The Suspension Status has been changed successfully for MSISDN: 0670100827",
+                                    "payload": "OrderID: 3739012668"
                                 }
                             }
                         }
                     },
-                    "500": {
-                        "description": "Technical exception or unexpected error.",
+                    "default": {
+                        "description": "Unexpected error",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "resultCode": {
-                                            "type": "integer",
-                                            "example": -1
-                                        },
-                                        "resultMessageCode": {
-                                            "type": "string",
-                                            "example": "api-gfr-013"
-                                        },
-                                        "resultMessage": {
-                                            "type": "string",
-                                            "example": "Unable to retrieve free resources due to a technical exception."
-                                        },
-                                        "friendlyCustomerMessage": {
-                                            "type": "string",
-                                            "example": "An unexpected error has occurred. Please try again later."
-                                        }
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/fulfilment/protected/api/sim/resume": {
+            "post": {
+                "tags": [
+                    "API"
+                ],
+                "summary": "Resume",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "msisdn": {
+                                        "type": "integer",
+                                        "example": 670100280
+                                    },
+                                    "sender": {
+                                        "type": "string",
+                                        "example": "Sanlam"
                                     }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Content-Type",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "application/json"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OIC-Agent"
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "OAM-Auth {{access_token}}"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "resultCode": 0,
+                                    "resultMessageCode": "api-suspendAndresume-000",
+                                    "resultMessage": "The Suspension Status has been changed successfully.",
+                                    "friendlyCustomerMessage": "The Suspension Status has been changed successfully for  MSISDN: 0670100827.",
+                                    "payload": "OrderID: 3739012668"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
                                 }
                             }
                         }

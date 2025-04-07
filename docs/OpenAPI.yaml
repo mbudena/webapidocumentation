@@ -64,7 +64,7 @@ components:
           type: string
           example: sanlam@test.com
     requestHeaders:
-      type: http
+      type: object
       required:
       - Content-Type
       - User-Agent
@@ -80,15 +80,24 @@ components:
     ErrorModel:
       type: object
       required:
-      - message
-      - code
+      - resultCode
+      - resultMessageCode
+      - resultMessage
+      - friendlyCustomerMessage
+      - payload
       properties:
-        message:
-          type: string
-        code:
+        resultCode:
           type: integer
-          minimum: 100
-          maximum: 600
+          minimum: -1
+          maximum: 1
+        resultMessageCode:
+          type: string
+        friendlyCustomerMessage:
+          type: string
+        payload:
+          type: array
+          example: {}
+
 paths:
   /oic_rest/rest/mobileoamauthentication/register:
     post:
@@ -99,18 +108,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/authrequestbodies'
-              examples:
-                X-Idaas-Rest-Subject-Type: USERCREDENTIAL
-                X-Idaas-Rest-Subject-Username: sanlam@test.com
-                X-Idaas-Rest-Subject-Password: Telkom10
-                X-Idaas-Rest-New-Token-Type-To-Create: CLIENTREGHANDLE
-                deviceProfile:
-                  'oracle:idm:claims:client:sdkversion':
-                  'oracle:idm:claims:client:ostype':
-                  'oracle:idm:claims:client:osversion':
-                  hardwareIds: {}
-                clientId: Telkom
+              type: object
+            example:
+              X-Idaas-Rest-Subject-Type: USERCREDENTIAL
+              X-Idaas-Rest-Subject-Username: sanlam@test.com
+              X-Idaas-Rest-Subject-Password: Telkom10
+              X-Idaas-Rest-New-Token-Type-To-Create: CLIENTREGHANDLE
+              deviceProfile:
+              - oracle:idm:claims:client:sdkversion: ""
+                oracle:idm:claims:client:ostype: ""
+                oracle:idm:claims:client:osversion: ""
+                hardwareIds: []
+              clientId: Telkom
       security:
       - login: []
       parameters:
@@ -125,7 +134,7 @@ paths:
           content:
             application/json:
               schema:
-              type: object
+                type: object
               example:
                 X-Idaas-Rest-Token-Type: CLIENTREGHANDLE
                 X-Idaas-Rest-Token-Value: >-
@@ -141,18 +150,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/authrequestbodies'
-              example:
-                X-Idaas-Rest-Subject-Type: USERCREDENTIAL
-                X-Idaas-Rest-Subject-Username: sanlam@test.com
-                X-Idaas-Rest-Subject-Password: Telkom10
-                X-Idaas-Rest-New-Token-Type-To-Create: USERTOKEN
-                deviceProfile:
-                  'oracle:idm:claims:client:sdkversion': 11.1.2.0.0
-                  'oracle:idm:claims:client:ostype': iOS 11.4
-                  'oracle:idm:claims:client:osversion': 11.4
-                  hardwareIds: {}
-                clientId: Telkom
+              type: object
+            example:
+              X-Idaas-Rest-Subject-Type: USERCREDENTIAL
+              X-Idaas-Rest-Subject-Username: sanlam@test.com
+              X-Idaas-Rest-Subject-Password: Telkom10
+              X-Idaas-Rest-New-Token-Type-To-Create: USERTOKEN
+              deviceProfile:
+              - oracle:idm:claims:client:sdkversion: ""
+                oracle:idm:claims:client:ostype: ""
+                oracle:idm:claims:client:osversion: ""
+                hardwareIds: []
+              clientId: Telkom
       security:
       - login: []
       parameters:
@@ -184,6 +193,7 @@ paths:
                   X-Idaas-Rest-Token-Value: >-
                     ffmS4OJVoTBknsVfsy8nzTZ%2BbLU9ugagu81rGeK19EHYySV5yqKsaQH3duej8INYe8bQBuynVRAc1QRx79U%2FRga22hZGceh1VeD%2BkZ6JHMgUAWrmjO6fSIQ1UycjpEWvy2kGhc75QYE%2FD9ukiV3t0EE97%2B2GSPZsPxov2BdJ7wwWFhnh93AVJuct3cCAdn89K1tp6NF5GsqwxIhohm6L0wOF92L6FKAWA3ska42TWSYOS%2BHQymOCf9OtvPgleIQi79f493UKyGfMH2iTdGGObGTbnAiJQ1XMq14Opk7rNkcFlLfXmaXesTwjYcZwpZt7OOfmxCQPj3tQVZOoZi7JnpSJTJkAIwOOOh5p%2F29oN5L98SS3vjhmGcAyVLKKpf2vO%2F%2B%2FI4OC2fXlcOjDEFqJY9ikm0A%2BCQ9K6%2FDRAta8dXiCpnx3k9H4%2B5q4NSMLTqAKli%2BoiHixuXPGjcDHepF10fr4nhFJoCWhCHVCqSNMnv1S1Jnd28C9xRvxFTKZH5jt
                   X-Idaas-Rest-User-Principal: sanlam@test.com
+
   /oic_rest/rest/mobileoamauthentication/access:
     post:
       tags:
@@ -193,15 +203,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/authrequestbodies'
-              example:
-                X-Idaas-Rest-Subject-Type: TOKEN
-                X-Idaas-Rest-Subject-Value: '{{user_token}}'
-                X-Idaas-Rest-Application-Context: >-
-                  encquery%3D5GyxkBxNl6gLglRh6U7L2AhB%2BpCPoy5eeQOJwugNlV7gjix6IhVzNRZJl3Hoy2U9AmhflrN5h2uwEXBU4TT8AWGnsl0J6F14a6tRnLfsj1BwsgcakoalZoAP5jKKS%2F2%2BxXPDxnjeea4IJxSfgix16ppMFwH3%2BJvbM9M1EyyPPdkAvtHcE7fcoLxMrbYZxlfWIZFKNSdwvoCJcqzF0bN8OJEnbAXIsQi4jjKiVSN3UwyLImx643GzYPxwx%2BCljkWL6VTY8FwH%2Be1A5HZyONB3nURjCV9Nnk7jxIdq4h2Od1Mh1VDGtC4YY3J4N7Vk72%2BtNSDzwm6If2C06eKIiq0HXpmKdaK3JrKm2y5F0OjLwjHcaA%2BTK1YK4G0jeYUsk6zvbJgiN5vjkq74JIE7FmHMwFti%2BNs0Q%2F47Rp76mm6RR%2FU%3D%20agentid%3Decdev02_7780%20ver%3D1%20crmethod%3D2
-                X-Idaas-Rest-Application-Resource: >-
-                  https://ecdev02selfservice.telkom.co.za/onnet/protected/api/getFreeResources
-                X-Idaas-Rest-New-Token-Type-To-Create: ACCESSTOKEN
+              type: object
+            example:
+              X-Idaas-Rest-Subject-Type: TOKEN
+              X-Idaas-Rest-Subject-Value: '{{user_token}}'
+              X-Idaas-Rest-Application-Context: >-
+                encquery%3D5GyxkBxNl6gLglRh6U7L2AhB%2BpCPoy5eeQOJwugNlV7gjix6IhVzNRZJl3Hoy2U9AmhflrN5h2uwEXBU4TT8AWGnsl0J6F14a6tRnLfsj1BwsgcakoalZoAP5jKKS%2F2%2BxXPDxnjeea4IJxSfgix16ppMFwH3%2BJvbM9M1EyyPPdkAvtHcE7fcoLxMrbYZxlfWIZFKNSdwvoCJcqzF0bN8OJEnbAXIsQi4jjKiVSN3UwyLImx643GzYPxwx%2BCljkWL6VTY8FwH%2Be1A5HZyONB3nURjCV9Nnk7jxIdq4h2Od1Mh1VDGtC4YY3J4N7Vk72%2BtNSDzwm6If2C06eKIiq0HXpmKdaK3JrKm2y5F0OjLwjHcaA%2BTK1YK4G0jeYUsk6zvbJgiN5vjkq74JIE7FmHMwFti%2BNs0Q%2F47Rp76mm6RR%2FU%3D%20agentid%3Decdev02_7780%20ver%3D1%20crmethod%3D2
+              X-Idaas-Rest-Application-Resource: >-
+                https://ecdev02selfservice.telkom.co.za/onnet/protected/api/getFreeResources
+              X-Idaas-Rest-New-Token-Type-To-Create: ACCESSTOKEN
       security:
       - login: []
       parameters:
@@ -362,8 +372,14 @@ paths:
                   productEntityRef: Wireless_Main
                   friendlyProductEntityRef: null
                   madChannelProductInd: 'N'
-        default:
-          description: Unexpected error
+        '400':
+          description: client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: server error
           content:
             application/json:
               schema:
@@ -427,8 +443,14 @@ paths:
           description: Successful response
           content:
             application/json: {}
-        default:
-          description: Unexpected error
+        '400':
+          description: client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: server error
           content:
             application/json:
               schema:
@@ -581,8 +603,14 @@ paths:
                   ratePlanExpireDate: '2037-01-01 00:00:00'
                   ratePlanCreateDate: '2024-07-15 15:39:24'
                   ratePlanSstatus: C01
-        default:
-          description: Unexpected error
+        '400':
+          description: client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: server error
           content:
             application/json:
               schema:
@@ -759,8 +787,14 @@ paths:
                   \tat java.lang.Thread.run(Thread.java:682)&lt;/tibco:myFaultDetail&gt;</tsmd:ResultMsg></tsmd:Result><tsmd:Headers/></tsmd:Exception></detail>"
                 friendlyCustomerMessage: An error occurred retrieving the PUK.
                 payload: {}
-        default:
-          description: Unexpected error
+        '400':
+          description: client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: server error
           content:
             application/json:
               schema:
@@ -852,13 +886,18 @@ paths:
                   info: >-
                     GPRS: 128849018880 Bytes remaining 0 Bytes used  Expires on Thu May 01 2025
                   service: GPRS
-        default:
-          description: Unexpected error
+        '400':
+          description: client error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorModel'
-
+        '500':
+          description: server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
   /eportal/eCustomer/api/getProduct:
     get:
       tags:
@@ -934,8 +973,14 @@ paths:
                     name: Roaming_options
                     Value: No_roaming
                     fkProductId: 90494402613
-        default:
-          description: Unexpected error
+        '400':
+          description: client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: server error
           content:
             application/json:
               schema:
@@ -988,8 +1033,14 @@ paths:
                 resultMessage: 'Could not retrieve billing usages history detail. '
                 friendlyCustomerMessage: ''
                 payload: {}
-        default:
-          description: Unexpected error
+        '400':
+          description: client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: server error
           content:
             application/json:
               schema:
@@ -1167,8 +1218,14 @@ paths:
                       discountAmount: '0.00'
                       creditAmount: '0.00'
                       billMonth: '00:00:00 Sat Mar 01 2025'
-        default:
-          description: Unexpected error
+        '400':
+          description: client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: server error
           content:
             application/json:
               schema:
@@ -1445,8 +1502,14 @@ paths:
                     customerName: OnBiller Acc
                     preferredCurrency: ZAR
                     vatRegistrationNumber: null
-        default:
-          description: Unexpected error
+        '400':
+          description: client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: server error
           content:
             application/json:
               schema:
@@ -1501,8 +1564,14 @@ paths:
                 friendlyCustomerMessage: >-
                   The Suspension Status has been changed successfully for MSISDN: 0670100827
                 payload: 'OrderID: 3739012668'
-        default:
-          description: Unexpected error
+        '400':
+          description: client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: server error
           content:
             application/json:
               schema:
@@ -1556,8 +1625,14 @@ paths:
                 friendlyCustomerMessage: >-
                   The Suspension Status has been changed successfully for  MSISDN: 0670100827.
                 payload: 'OrderID: 3739012668'
-        default:
-          description: Unexpected error
+        '400':
+          description: client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '500':
+          description: server error
           content:
             application/json:
               schema:

@@ -14,7 +14,7 @@ The following headers are mandatory:
 |----------------|------------------------|
 | `Accept`       | application/json       |
 | `Content-Type` | application/json       |
-| `Authorization` | OAM-Auth <<accesstoken>> |
+| `Authorization` | OAM-Auth {{accesstoken}} |
 
 See the *Authentication and Authorization* section for details.
 

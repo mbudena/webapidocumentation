@@ -185,6 +185,21 @@ Content-Type: application/json
 X-Idaas-Rest-Authorization: UIDPASSWORD cred="&lt;Base64_encoded_string&gt;"
 Content-Type:application/json
 </code></pre>
+<p><strong>Body:</strong></p>
+<pre><code class="language-json">{
+  "X-Idaas-Rest-Subject-Type": "USERCREDENTIAL",
+  "X-Idaas-Rest-Subject-Username": "your_username",
+  "X-Idaas-Rest-Subject-Password": "your_password",
+  "X-Idaas-Rest-New-Token-Type-To-Create": "USERTOKEN",
+  "deviceProfile": {
+    "oracle:idm:claims:client:sdkversion": "",
+    "oracle:idm:claims:client:ostype": "",
+    "oracle:idm:claims:client:osversion": "",
+    "hardwareIds": {}
+  },
+  "clientId": "Telkom"
+}
+</code></pre>
 <p><strong>Response:</strong></p>
 <pre><code class="language-json">{
   "X-Idaas-Rest-Provider-Type": "OAM_11G",
@@ -198,6 +213,7 @@ Content-Type:application/json
 <ol>
 <li>Make an unauthorized request to a protected API</li>
 <li>Capture the <code>request-ctx</code> from the response headers</li>
+<li>Use <code>request-ctx</code>  in request body and get access token</li>
 </ol>
 <p><strong>Request headers:</strong></p>
 <pre><code class="language-http">X-IDAAS-SERVICEDOMAIN: MobileServiceDomain
@@ -208,6 +224,28 @@ User-Agent: OIC-Agent
 <pre><code class="language-http">WWW-Authenticate: OAM-Auth realm="...", request-ctx="encquery%3DluHq%2BADwTADDCXsILpll5Hy%2FPQGwkYwQ..."
 </code></pre>
 <p>Use this <code>request-ctx</code> in your next token generation step.</p>
+<p><strong>Generate access token</strong></p>
+<pre><code class="language-http">X-IDAAS-SERVICEDOMAIN: MobileServiceDomain
+X-Idaas-Rest-Authorization: UIDPASSWORD cred="&lt;Base64_encoded_string&gt;"
+Content-Type:application/json
+</code></pre>
+<p><strong>Body:</strong></p>
+<pre><code class="language-json">{
+  "X-Idaas-Rest-Subject-Type":"TOKEN",
+  "X-Idaas-Rest-Subject-Value":"{{user_token}}",
+  "X-Idaas-Rest-Application-Context":"encquery%3DluHq%2BADwTADDCXsILpll5Hy%2FPQGwkYwQ...",
+  "X-Idaas-Rest-Application-Resource":"https://ecdev02selfservice.telkom.co.za/onnet/protected/api/getFreeResources",
+  "X-Idaas-Rest-New-Token-Type-To-Create":"ACCESSTOKEN"
+}
+</code></pre>
+<p><strong>Response</strong></p>
+<pre><code class="language-json">{ 
+"X-Idaas-Rest-Provider-Type":"OAM_11G",
+"X-Idaas-Rest-Token-Type":"ACCESSTOKEN",
+"X-Idaas-Rest-Token-Value":"qMn46VUXCL39py%2FV1ByL%2BaTyDF8wIgxkJC6ZEV ...",
+"X-Idaas-Rest-User-Principal":"sanlam@test.com"
+}
+</code></pre>
 <h2 id="step-5-access-protected-resources">Step 5: Access Protected Resources</h2>
 <p>Use the access token in the Authorization header to access protected endpoints.</p>
 <h3 id="example-request">Example Request:</h3>

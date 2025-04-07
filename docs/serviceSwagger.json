@@ -96,7 +96,7 @@
                 }
             },
             "requestHeaders": {
-                "type": "http",
+                "type": "object",
                 "required": [
                     "Content-Type",
                     "User-Agent",
@@ -118,17 +118,27 @@
             "ErrorModel": {
                 "type": "object",
                 "required": [
-                    "message",
-                    "code"
+                    "resultCode",
+                    "resultMessageCode",
+                    "resultMessage",
+                    "friendlyCustomerMessage",
+                    "payload"
                 ],
                 "properties": {
-                    "message": {
+                    "resultCode": {
+                        "type": "integer",
+                        "minimum": -1,
+                        "maximum": 1
+                    },
+                    "resultMessageCode": {
                         "type": "string"
                     },
-                    "code": {
-                        "type": "integer",
-                        "minimum": 100,
-                        "maximum": 600
+                    "friendlyCustomerMessage": {
+                        "type": "string"
+                    },
+                    "payload": {
+                        "type": "array",
+                        "example": {}
                     }
                 }
             }
@@ -145,20 +155,22 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/authrequestbodies",
-                                "examples": {
-                                    "X-Idaas-Rest-Subject-Type": "USERCREDENTIAL",
-                                    "X-Idaas-Rest-Subject-Username": "sanlam@test.com",
-                                    "X-Idaas-Rest-Subject-Password": "Telkom10",
-                                    "X-Idaas-Rest-New-Token-Type-To-Create": "CLIENTREGHANDLE",
-                                    "deviceProfile": {
-                                        "oracle:idm:claims:client:sdkversion": null,
-                                        "oracle:idm:claims:client:ostype": null,
-                                        "oracle:idm:claims:client:osversion": null,
-                                        "hardwareIds": {}
-                                    },
-                                    "clientId": "Telkom"
-                                }
+                                "type": "object"
+                            },
+                            "example": {
+                                "X-Idaas-Rest-Subject-Type": "USERCREDENTIAL",
+                                "X-Idaas-Rest-Subject-Username": "sanlam@test.com",
+                                "X-Idaas-Rest-Subject-Password": "Telkom10",
+                                "X-Idaas-Rest-New-Token-Type-To-Create": "CLIENTREGHANDLE",
+                                "deviceProfile": [
+                                    {
+                                        "oracle:idm:claims:client:sdkversion": "",
+                                        "oracle:idm:claims:client:ostype": "",
+                                        "oracle:idm:claims:client:osversion": "",
+                                        "hardwareIds": []
+                                    }
+                                ],
+                                "clientId": "Telkom"
                             }
                         }
                     }
@@ -183,8 +195,9 @@
                         "description": "Successful response",
                         "content": {
                             "application/json": {
-                                "schema": null,
-                                "type": "object",
+                                "schema": {
+                                    "type": "object"
+                                },
                                 "example": {
                                     "X-Idaas-Rest-Token-Type": "CLIENTREGHANDLE",
                                     "X-Idaas-Rest-Token-Value": "eyJvcmFjbGU6aWRtOmNsYWltczpjbGllbnQ6c2RrdmVyc2lvbiI6IiIsInRva2VuVHlwZSI6IkNMSUVOVFJFR0hBTkRMRSIsInJlZ1VzZXIiOiJzYW5sYW1AdGVzdC5jb20iLCJpc3MiOiJNb2JpbGVPQU1BdXRoZW50aWNhdGlvbiIsIm9yYWNsZTppZG06Y2xhaW1zOmNsaWVudDpvc3R5cGUiOiIiLCJyZWdUUyI6MTc0NDAxNzg3MCwianRpIjoiNjdmMzkxNjItZWFlMy00MjY2LWE1MDMtMTg1NGUwZGQ1ZGQyIiwib3JhY2xlOmlkbTpjbGFpbXM6Y2xpZW50Om9zdmVyc2lvbiI6IiIsImNsaWVudElkIjoiVGVsa29tIn0=.rT/bJHyk33ayMhIVz5g3217rAXUAKIm7KWRgiJ63wB4="
@@ -206,20 +219,22 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/authrequestbodies",
-                                "example": {
-                                    "X-Idaas-Rest-Subject-Type": "USERCREDENTIAL",
-                                    "X-Idaas-Rest-Subject-Username": "sanlam@test.com",
-                                    "X-Idaas-Rest-Subject-Password": "Telkom10",
-                                    "X-Idaas-Rest-New-Token-Type-To-Create": "USERTOKEN",
-                                    "deviceProfile": {
-                                        "oracle:idm:claims:client:sdkversion": "11.1.2.0.0",
-                                        "oracle:idm:claims:client:ostype": "iOS 11.4",
-                                        "oracle:idm:claims:client:osversion": 11.4,
-                                        "hardwareIds": {}
-                                    },
-                                    "clientId": "Telkom"
-                                }
+                                "type": "object"
+                            },
+                            "example": {
+                                "X-Idaas-Rest-Subject-Type": "USERCREDENTIAL",
+                                "X-Idaas-Rest-Subject-Username": "sanlam@test.com",
+                                "X-Idaas-Rest-Subject-Password": "Telkom10",
+                                "X-Idaas-Rest-New-Token-Type-To-Create": "USERTOKEN",
+                                "deviceProfile": [
+                                    {
+                                        "oracle:idm:claims:client:sdkversion": "",
+                                        "oracle:idm:claims:client:ostype": "",
+                                        "oracle:idm:claims:client:osversion": "",
+                                        "hardwareIds": []
+                                    }
+                                ],
+                                "clientId": "Telkom"
                             }
                         }
                     }
@@ -285,14 +300,14 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/authrequestbodies",
-                                "example": {
-                                    "X-Idaas-Rest-Subject-Type": "TOKEN",
-                                    "X-Idaas-Rest-Subject-Value": "{{user_token}}",
-                                    "X-Idaas-Rest-Application-Context": "encquery%3D5GyxkBxNl6gLglRh6U7L2AhB%2BpCPoy5eeQOJwugNlV7gjix6IhVzNRZJl3Hoy2U9AmhflrN5h2uwEXBU4TT8AWGnsl0J6F14a6tRnLfsj1BwsgcakoalZoAP5jKKS%2F2%2BxXPDxnjeea4IJxSfgix16ppMFwH3%2BJvbM9M1EyyPPdkAvtHcE7fcoLxMrbYZxlfWIZFKNSdwvoCJcqzF0bN8OJEnbAXIsQi4jjKiVSN3UwyLImx643GzYPxwx%2BCljkWL6VTY8FwH%2Be1A5HZyONB3nURjCV9Nnk7jxIdq4h2Od1Mh1VDGtC4YY3J4N7Vk72%2BtNSDzwm6If2C06eKIiq0HXpmKdaK3JrKm2y5F0OjLwjHcaA%2BTK1YK4G0jeYUsk6zvbJgiN5vjkq74JIE7FmHMwFti%2BNs0Q%2F47Rp76mm6RR%2FU%3D%20agentid%3Decdev02_7780%20ver%3D1%20crmethod%3D2",
-                                    "X-Idaas-Rest-Application-Resource": "https://ecdev02selfservice.telkom.co.za/onnet/protected/api/getFreeResources",
-                                    "X-Idaas-Rest-New-Token-Type-To-Create": "ACCESSTOKEN"
-                                }
+                                "type": "object"
+                            },
+                            "example": {
+                                "X-Idaas-Rest-Subject-Type": "TOKEN",
+                                "X-Idaas-Rest-Subject-Value": "{{user_token}}",
+                                "X-Idaas-Rest-Application-Context": "encquery%3D5GyxkBxNl6gLglRh6U7L2AhB%2BpCPoy5eeQOJwugNlV7gjix6IhVzNRZJl3Hoy2U9AmhflrN5h2uwEXBU4TT8AWGnsl0J6F14a6tRnLfsj1BwsgcakoalZoAP5jKKS%2F2%2BxXPDxnjeea4IJxSfgix16ppMFwH3%2BJvbM9M1EyyPPdkAvtHcE7fcoLxMrbYZxlfWIZFKNSdwvoCJcqzF0bN8OJEnbAXIsQi4jjKiVSN3UwyLImx643GzYPxwx%2BCljkWL6VTY8FwH%2Be1A5HZyONB3nURjCV9Nnk7jxIdq4h2Od1Mh1VDGtC4YY3J4N7Vk72%2BtNSDzwm6If2C06eKIiq0HXpmKdaK3JrKm2y5F0OjLwjHcaA%2BTK1YK4G0jeYUsk6zvbJgiN5vjkq74JIE7FmHMwFti%2BNs0Q%2F47Rp76mm6RR%2FU%3D%20agentid%3Decdev02_7780%20ver%3D1%20crmethod%3D2",
+                                "X-Idaas-Rest-Application-Resource": "https://ecdev02selfservice.telkom.co.za/onnet/protected/api/getFreeResources",
+                                "X-Idaas-Rest-New-Token-Type-To-Create": "ACCESSTOKEN"
                             }
                         }
                     }
@@ -508,8 +523,18 @@
                             }
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
+                    "400": {
+                        "description": "client error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -603,8 +628,18 @@
                             "application/json": {}
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
+                    "400": {
+                        "description": "client error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -835,8 +870,18 @@
                             }
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
+                    "400": {
+                        "description": "client error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -919,8 +964,18 @@
                             }
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
+                    "400": {
+                        "description": "client error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1045,8 +1100,18 @@
                             }
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
+                    "400": {
+                        "description": "client error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1162,8 +1227,18 @@
                             }
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
+                    "400": {
+                        "description": "client error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1246,8 +1321,18 @@
                             }
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
+                    "400": {
+                        "description": "client error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1474,8 +1559,18 @@
                             }
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
+                    "400": {
+                        "description": "client error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1794,8 +1889,18 @@
                             }
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
+                    "400": {
+                        "description": "client error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1878,8 +1983,18 @@
                             }
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
+                    "400": {
+                        "description": "client error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1962,8 +2077,18 @@
                             }
                         }
                     },
-                    "default": {
-                        "description": "Unexpected error",
+                    "400": {
+                        "description": "client error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "server error",
                         "content": {
                             "application/json": {
                                 "schema": {

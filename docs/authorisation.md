@@ -96,6 +96,25 @@ X-Idaas-Rest-Authorization: UIDPASSWORD cred="<Base64_encoded_string>"
 Content-Type:application/json
 ```
 
+**Body:**
+
+```json
+{
+  "X-Idaas-Rest-Subject-Type": "USERCREDENTIAL",
+  "X-Idaas-Rest-Subject-Username": "your_username",
+  "X-Idaas-Rest-Subject-Password": "your_password",
+  "X-Idaas-Rest-New-Token-Type-To-Create": "USERTOKEN",
+  "deviceProfile": {
+    "oracle:idm:claims:client:sdkversion": "",
+    "oracle:idm:claims:client:ostype": "",
+    "oracle:idm:claims:client:osversion": "",
+    "hardwareIds": {}
+  },
+  "clientId": "Telkom"
+}
+```
+
+
 **Response:**
 
 ```json
@@ -113,6 +132,7 @@ Content-Type:application/json
 
 1. Make an unauthorized request to a protected API
 2. Capture the `request-ctx` from the response headers
+3. Use `request-ctx`  in request body and get access token
 
 **Request headers:**
 
@@ -130,6 +150,37 @@ WWW-Authenticate: OAM-Auth realm="...", request-ctx="encquery%3DluHq%2BADwTADDCX
 
 Use this `request-ctx` in your next token generation step.
 
+**Generate access token**
+
+```http
+X-IDAAS-SERVICEDOMAIN: MobileServiceDomain
+X-Idaas-Rest-Authorization: UIDPASSWORD cred="<Base64_encoded_string>"
+Content-Type:application/json
+```
+
+**Body:**
+```json
+{
+  "X-Idaas-Rest-Subject-Type":"TOKEN",
+  "X-Idaas-Rest-Subject-Value":"{{user_token}}",
+  "X-Idaas-Rest-Application-Context":"encquery%3DluHq%2BADwTADDCXsILpll5Hy%2FPQGwkYwQ...",
+  "X-Idaas-Rest-Application-Resource":"https://ecdev02selfservice.telkom.co.za/onnet/protected/api/getFreeResources",
+  "X-Idaas-Rest-New-Token-Type-To-Create":"ACCESSTOKEN"
+}
+```
+
+**Response**
+
+```json
+{ 
+"X-Idaas-Rest-Provider-Type":"OAM_11G",
+"X-Idaas-Rest-Token-Type":"ACCESSTOKEN",
+"X-Idaas-Rest-Token-Value":"qMn46VUXCL39py%2FV1ByL%2BaTyDF8wIgxkJC6ZEV ...",
+"X-Idaas-Rest-User-Principal":"sanlam@test.com"
+}
+```
+
+
 ## Step 5: Access Protected Resources
 
 Use the access token in the Authorization header to access protected endpoints.
@@ -142,6 +193,7 @@ Content-Type: application/json
 User-Agent: OIC-Agent
 Authorization: OAM-Auth {{access_token}}
 ```
+
 
 ### Response:
 
